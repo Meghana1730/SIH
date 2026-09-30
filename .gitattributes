@@ -1,0 +1,20 @@
+# Normalise line endings so Windows and Linux (Docker) teammates don't fight over them.
+* text=auto
+
+# Files that run inside Linux containers or are read by Linux tools must use LF.
+*.sh        text eol=lf
+*.py        text eol=lf
+*.sql       text eol=lf
+*.yml       text eol=lf
+*.yaml      text eol=lf
+Dockerfile  text eol=lf
+
+# PowerShell scripts stay Windows-style.
+*.ps1       text eol=crlf
+
+# Binary files.
+*.png   binary
+*.jpg   binary
+*.pdf   binary
+*.xlsx  binary
+*.dump  binary

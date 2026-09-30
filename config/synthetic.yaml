@@ -1,0 +1,107 @@
+# =============================================================================
+# KaushalSetu synthetic (demo) data configuration
+# =============================================================================
+# Settings for the demo data generator (backend/app/synthetic/). Everything generated is
+# marked is_synthetic = true and shown with a "demo data" badge (docs/03-prd.md §16).
+# The numbers are a DEMONSTRATION WORLD, never official statistics.
+# Override the seed for one run with the SYNTH_SEED environment variable.
+#
+#   python -m app.cli.synthetic all        # generate + load + validate
+#
+# Validate this file with:  python -m app.config
+# =============================================================================
+
+# Same seed = identical data every time (reproducible demos and tests). The seed only
+# changes incidental details (dates, titles, which candidate is placed); the planted
+# patterns come from the world spec and hold for any seed.
+seed: 20260929
+
+# The hand-written demo world (skills, roles, courses, institutes, employers, quarterly
+# demand schedules) and where the generated CSV/JSON files go. Relative to the repo root.
+spec_file: data/synthetic/spec/demo_world.yaml
+export_dir: data/synthetic/export
+
+# Quarters of demo history. The end quarter is the demo's "current" quarter.
+history:
+  start_quarter: "2025Q2"
+  end_quarter: "2026Q3"
+
+# Target volumes (minimums from docs/03-prd.md §10.2); the validator checks them.
+volumes:
+  job_postings: 2000
+  employer_survey_responses: 80
+  candidates: 600
+  institutes: 10
+  trainers_per_institute: {min: 2, max: 6}
+  employers_per_district:
+    golden_path_district: 5      # at least 5 employers in the demo district
+    other_districts: 2
+
+# Source IDs (docs/DATA_SOURCE_INVENTORY.md, section I) written into each record's
+# `source` column, so every synthetic row says which generated dataset it came from.
+source_ids:
+  job_postings: Y01
+  employer_survey_responses: Y02
+  consultations: Y03
+  sector_events: Y04
+  course_offerings: Y05
+  trainers: Y06
+  institute_equipment: Y07
+  candidates: Y08
+  enrollments: Y09
+  placement_outcomes: Y10
+  employer_ratings: Y11
+  equipment_costs: Y12
+  demo_vocabulary: Y13           # demo skills, aliases, roles, courses, modules, equipment
+  institutes: Y14                # fictional "Example ..." institutes
+  employers: Y15                 # fictional "Example ..." employers
+
+# Patterns deliberately planted in the demo data, so we can prove the engines find them
+# (docs/03-prd.md §16). They describe SYNTHETIC data, not real-world claims.
+# `enabled: true` = the validator (python -m app.cli.synthetic validate) must confirm it.
+planted_patterns:
+  PP1:
+    enabled: true
+    description: EV jobs and EV skills (EV Diagnostics, Battery Management, EV Charging Systems) grow quarter after quarter; solar PV installation grows too.
+    districts: [MH-NASHIK, MH-PUNE]
+    sectors: [EV, SOLAR_PV]
+  PP2:
+    enabled: true
+    description: The Electrician course at "Example ITI A" (Nashik) teaches wiring, safety, basic motors and motor rewinding, but none of the EV skills.
+    districts: [MH-NASHIK]
+    sectors: [ELECTRICAL]
+  PP3:
+    enabled: true
+    description: Wireman training supply stays high while wireman demand shrinks and placement is weak, so the supply/demand ratio shows oversupply.
+    districts: [MH-KOLHAPUR]
+    sectors: [ELECTRICAL]
+  PP4:
+    enabled: true
+    description: Motor rewinding demand falls in each of the last four quarters (Q1 > Q2 > Q3 > Q4), strongly enough for the trend rule.
+    districts: [MH-PUNE, MH-NASHIK, MH-NAGPUR, MH-KOLHAPUR]
+    sectors: [ELECTRICAL]
+  PP5:
+    enabled: true
+    description: An EV industry event in Nashik (in the dataset) lifts future EV demand through the configured lag window.
+    districts: [MH-NASHIK]
+    sectors: [EV]
+  PP6:
+    enabled: true
+    description: The institute that already teaches EV skills places its trainees better than the others.
+    districts: [MH-PUNE]
+    sectors: [EV]
+  PP7:
+    enabled: true
+    description: Employer surveys in Nashik and Pune ask for more EV-skilled people over time.
+    districts: [MH-NASHIK, MH-PUNE]
+    sectors: [EV]
+
+# Pre-filled values for the admin "Simulate event" form (docs/03-prd.md F19, demo story).
+# This LIVE demo event is separate from the dataset's own EV event (PP5).
+demo_event:
+  district: MH-NASHIK
+  sector: EV
+  event_type: NEW_PLANT
+  title: EV component plant announced (simulated)
+  expected_jobs: 1200
+  announced_quarter: "2026Q3"

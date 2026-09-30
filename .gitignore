@@ -1,0 +1,34 @@
+# ---------- Python ----------
+__pycache__/
+*.py[cod]
+.venv/
+*.egg-info/
+.pytest_cache/
+.ruff_cache/
+
+# ---------- Secrets / environment ----------
+.env
+.env.*
+!.env.example
+
+# ---------- Node / frontend ----------
+node_modules/
+frontend/dist/
+frontend/playwright-report/
+frontend/test-results/
+frontend/blob-report/
+
+# ---------- Data and generated files (keep the repo small) ----------
+data/raw/**
+!data/raw/README.md
+# Leading "/" = only the folder at the repository root.
+# (Without it, "models/" would also hide backend/app/models/, our database models!)
+/generated/
+/models/
+
+# ---------- OS / editors ----------
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/*
+!.vscode/extensions.json

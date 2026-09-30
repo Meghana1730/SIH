@@ -1,0 +1,19 @@
+# =============================================================================
+# Place names -> district (for mapping job-ad locations; data source inventory C04)
+# =============================================================================
+# Industrial areas and towns that appear in job-ad locations, and the district they are in.
+# Source: team knowledge of Maharashtra geography. TODO-VERIFY each entry against the
+# LGD village/town directory (S27) before relying on it; unverified entries are still used
+# for matching but a district officer can correct them through the review queue.
+# District names and their spellings (Nasik, Poona) come from config/scope.yaml.
+# =============================================================================
+
+verified: false
+places:
+  MH-NASHIK: [Ambad, Ambad MIDC, Satpur, Satpur MIDC, Sinnar, Sinnar MIDC, Nashik Road,
+              Igatpuri, Malegaon, Dindori]
+  MH-PUNE: [Chakan, Chakan MIDC, Bhosari, Bhosari MIDC, Ranjangaon, Ranjangaon MIDC, Talegaon,
+            Hinjewadi, Hadapsar, Pimpri, Chinchwad, Pimpri Chinchwad]
+  MH-NAGPUR: [Hingna, Hingna MIDC, Butibori, Butibori MIDC, Kamptee, Wardha Road]
+  MH-KOLHAPUR: [Shiroli, Shiroli MIDC, Gokul Shirgaon, Gokul Shirgaon MIDC, Kagal,
+                Ichalkaranji, Jaysingpur]

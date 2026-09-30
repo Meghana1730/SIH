@@ -1,0 +1,73 @@
+# =============================================================================
+# KaushalSetu LLM and embedding configuration
+# =============================================================================
+# The product must work with NO paid LLM at all (docs/04-architecture.md §4.6). The default
+# provider is "mock": deterministic rules, no network, no key, Rs 0 (backend/app/llm/).
+# API keys are NEVER written here: set LLM_API_KEY in .env instead.
+#
+# Environment overrides (for one machine / deployment, without editing this file):
+#   LLM_PROVIDER, LLM_MODE, LLM_MODEL, LLM_MAX_CALLS_PER_JOB,
+#   EMBEDDINGS_ENABLED, EMBEDDING_MODEL_PATH
+# Validate with:  python -m app.config
+# =============================================================================
+
+llm:
+  # none | mock | ollama | openai | anthropic
+  # mock = free stand-in that answers with simple documented rules (never made-up facts)
+  provider: mock
+  # off        = never call an LLM (deterministic fallbacks only)
+  # cache_only = only reuse answers already in the llm_cache table (offline demo)
+  # live       = call the provider (costs money for cloud providers; the mock is free)
+  # Quote "off": in YAML, a bare off means false.
+  mode: "live"
+  timeout_seconds: 20
+  retries: 1                     # extra attempts after a failed/invalid answer
+  retry_backoff_seconds: 1.0     # wait before retry n: backoff x 2^(n-1)
+  max_calls_per_job: 50          # budget guard (per request / batch)
+  max_output_tokens: 1024        # answer size limit for cloud providers
+  # Model name per provider. null = not chosen yet (required before using that provider).
+  models:
+    ollama: null                 # choose a small local model after testing on team laptops
+    openai: null
+    anthropic: claude-opus-5
+  ollama_base_url: http://127.0.0.1:11434
+  # Optional LLM tasks (docs/04-architecture.md §4.7, docs/06-job-intelligence.md).
+  # prompt_version changes invalidate that task's cached answers.
+  tasks:
+    # Quote skill phrases from ads in which nothing was found (off: the rules usually do).
+    skill_phrase_extraction: {enabled: false, prompt_version: v1}
+    # Last resort in skill matching: the LLM may only PICK one of the candidate skills
+    # (never invent one), and its answer always goes to human review.
+    skill_match_fallback: {enabled: true, prompt_version: v1}
+    # Same for job roles: pick one of the candidate roles or none; always reviewed.
+    role_match_fallback: {enabled: true, prompt_version: v1}
+    module_outline_polish: {enabled: false, prompt_version: v1}
+    consultation_insights: {enabled: false, prompt_version: v1}
+    chat_intent_parsing: {enabled: false, prompt_version: v1}
+    explanation_paraphrase: {enabled: false, prompt_version: v1}
+
+embeddings:
+  # Semantic skill matching (docs/05-skill-matching.md). Needs the model on disk, downloaded
+  # once with:  python -m app.cli.download_embedding_model
+  # If the model or sentence-transformers is missing, matching falls back to
+  # exact/alias/fuzzy only. Low-memory machines can set EMBEDDINGS_ENABLED=false.
+  enabled: true
+  # Chosen after comparing with paraphrase-multilingual-MiniLM-L12-v2 on our evaluation set.
+  # TODO-VERIFY the license on the model card before any public deployment.
+  model_name: intfloat/multilingual-e5-small
+  # Must equal the database vector size (backend/app/models/base.py EMBEDDING_DIM).
+  dimension: 384
+  # Where the downloaded model files live, relative to the repository root.
+  local_path: models/multilingual-e5-small
+  # e5 models expect a text prefix. Matching a phrase to a skill name is a *symmetric*
+  # task, for which the model card recommends "query: " on both sides; on our evaluation set
+  # this also ranked better than "query:"/"passage:" (docs/05-skill-matching.md).
+  # After changing a prefix or the model, re-embed: python -m app.cli.embed_skills --all
+  query_prefix: "query: "
+  document_prefix: "query: "
+  batch_size: 32
+  # Cosine similarity at or below this counts as confidence 0 (1.0 counts as 1).
+  # e5 scores even unrelated phrases around 0.83-0.88, so its scale must be stretched:
+  # with 0.70, review needs similarity >= ~0.88 and auto-accept >= ~0.955.
+  # Calibrated on data/gold/skill_matching_cases.yaml (small set; re-check on real data).
+  similarity_floor: 0.70

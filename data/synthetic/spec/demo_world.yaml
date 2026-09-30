@@ -1,0 +1,995 @@
+# =============================================================================
+# KaushalSetu demo world: the hand-written description the synthetic generator expands
+# =============================================================================
+# EVERYTHING IN THIS FILE IS SYNTHETIC. Institutes and employers are fictional ("Example
+# ..."), all numbers are TEAM ASSUMPTIONS chosen to plant the patterns in
+# config/synthetic.yaml (PP1-PP7). None of it is an official statistic, a real company, a
+# real syllabus or a government code. Official codes are never set.
+#
+# The generator (backend/app/synthetic/) turns this file + the seed in config/synthetic.yaml
+# into CSV files under data/synthetic/export/:
+#
+#   python -m app.cli.synthetic generate     # write the CSV/JSON export
+#   python -m app.cli.synthetic load         # import it into the database
+#   python -m app.cli.synthetic validate     # prove the planted patterns are in the data
+#
+# The COUNTS below (postings per quarter, seats, completion/placement rates, survey
+# headcounts) decide the patterns, so the patterns hold for every seed. The seed only
+# decides incidental details: dates inside a quarter, job titles, employers of postings,
+# salaries, which trainee is placed.
+#
+# Quarter lists always cover config/synthetic.yaml history: 2025Q2, 2025Q3, 2025Q4,
+# 2026Q1, 2026Q2, 2026Q3 (6 values). Validate with: python -m app.cli.synthetic check-spec
+# =============================================================================
+
+# Data cut-off: nothing in the dataset is dated after this day (inside the last quarter).
+as_of: "2026-09-28"
+# Written into every row's fetched_at, so the export is identical on every run.
+generated_at: "2026-09-28T12:00:00+05:30"
+license_note: >-
+  SYNTHETIC demo data (KaushalSetu SIH prototype): fictional entities, team-assumed
+  numbers, not real or official statistics.
+
+# -----------------------------------------------------------------------------
+# Districts: place names used in job-ad locations (real areas; the numbers are not real)
+# -----------------------------------------------------------------------------
+districts:
+  MH-NASHIK:
+    spellings: [Nashik, Nashik, Nashik, Nasik]      # repeated = more likely
+    areas: [Ambad MIDC, Satpur MIDC, Sinnar MIDC, Nashik Road, Igatpuri, Malegaon]
+    salary_factor: 1.0
+    posting_languages: {en: 0.75, mr: 0.20, hi: 0.05}
+  MH-PUNE:
+    spellings: [Pune, Pune, Pune, Poona]
+    areas: [Chakan MIDC, Bhosari MIDC, Ranjangaon MIDC, Talegaon, Hinjewadi, Hadapsar]
+    salary_factor: 1.1
+    posting_languages: {en: 0.80, mr: 0.12, hi: 0.08}
+  MH-NAGPUR:
+    spellings: [Nagpur]
+    areas: [Hingna MIDC, Butibori MIDC, Kamptee, Wardha Road]
+    salary_factor: 0.95
+    posting_languages: {en: 0.75, mr: 0.15, hi: 0.10}
+  MH-KOLHAPUR:
+    spellings: [Kolhapur]
+    areas: [Shiroli MIDC, Gokul Shirgaon MIDC, Kagal, Ichalkaranji, Jaysingpur]
+    salary_factor: 0.9
+    posting_languages: {en: 0.70, mr: 0.27, hi: 0.03}
+
+# -----------------------------------------------------------------------------
+# Demo skill vocabulary (a stand-in until the curated Skill Graph in data/reference exists)
+# -----------------------------------------------------------------------------
+skills:
+  - code: ev-diagnostics
+    name: EV Diagnostics
+    type: TECHNICAL
+    description: Finding faults in electric vehicles with scan tools and measurements.
+    aliases:
+      en: [EV fault diagnosis, electric vehicle diagnostics, EV troubleshooting]
+      hi: [ईवी खराबी जांच]
+      mr: [ईव्ही दोष निदान]
+  - code: battery-management
+    name: Battery Management
+    type: TECHNICAL
+    description: Handling, testing and servicing EV battery packs and their battery management system (BMS).
+    aliases:
+      en: [battery management system, BMS, lithium-ion battery handling, battery diagnostics, battery testing]
+      hi: [बैटरी प्रबंधन]
+      mr: [बॅटरी व्यवस्थापन]
+  - code: ev-charging-systems
+    name: EV Charging Systems
+    type: TECHNICAL
+    description: Installing, commissioning and maintaining EV chargers and charging points.
+    aliases:
+      en: [EV charger installation, EV charging station installation, charging point installation, charging station, EV charger]
+      hi: [ईवी चार्जर लगाना]
+      mr: [ईव्ही चार्जर बसवणे]
+  - code: hv-safety
+    name: High-Voltage Safety
+    type: SAFETY
+    description: Working safely on high-voltage EV systems (isolation, PPE, safe discharge).
+    aliases:
+      en: [HV safety, EV high-voltage precautions]
+      hi: [हाई वोल्टेज सुरक्षा]
+      mr: [हाय व्होल्टेज सुरक्षा]
+  - code: ev-motor-controller
+    name: EV Motor and Controller Servicing
+    type: TECHNICAL
+    description: Checking and servicing EV traction motors and motor controllers.
+    aliases:
+      en: [EV motor controller, BLDC motor servicing]
+  - code: electrical-wiring
+    name: Electrical Wiring
+    type: TECHNICAL
+    description: Domestic and industrial wiring to drawings, with correct cables and protection.
+    aliases:
+      en: [house wiring, domestic wiring, industrial wiring]
+      hi: [बिजली वायरिंग]
+      mr: [वायरिंग काम]
+  - code: electrical-safety
+    name: Electrical Safety
+    type: SAFETY
+    description: Safe working practices on electrical installations, including isolation and lock-out.
+    aliases:
+      en: [electrical safety practices, lockout tagout]
+      hi: [विद्युत सुरक्षा]
+      mr: [विद्युत सुरक्षा]
+  - code: earthing
+    name: Earthing and Grounding
+    type: TECHNICAL
+    description: Installing and testing earthing systems.
+    aliases:
+      en: [earthing, grounding, earth pit installation]
+  - code: panel-wiring
+    name: Control Panel Wiring
+    type: TECHNICAL
+    description: Wiring distribution boards, starters and control panels.
+    aliases:
+      en: [MCC panel wiring, starter wiring, panel board wiring]
+  - code: motor-maintenance
+    name: Basic Motor Maintenance
+    type: TECHNICAL
+    description: Routine checks and servicing of AC/DC motors and pumps.
+    aliases:
+      en: [motor servicing, AC motor maintenance, pump motor repair]
+  - code: motor-rewinding
+    name: Motor Rewinding
+    type: TECHNICAL
+    description: Manually rewinding the coils of burnt electric motors.
+    aliases:
+      en: [rewinding, armature winding, coil winding]
+      hi: [मोटर वाइंडिंग]
+      mr: [मोटर वाइंडिंग]
+  - code: electrical-testing
+    name: Electrical Testing and Measurement
+    type: TOOL
+    description: Using multimeters, insulation testers and earth testers.
+    aliases:
+      en: [multimeter use, megger testing, insulation resistance testing]
+  - code: cable-installation
+    name: Cable Laying and Termination
+    type: TECHNICAL
+    description: Laying, jointing and terminating power cables.
+    aliases:
+      en: [cable jointing, cable termination, cable laying]
+  - code: solar-pv-installation
+    name: Solar PV Installation
+    type: TECHNICAL
+    description: Mounting, wiring and commissioning rooftop solar PV systems.
+    aliases:
+      en: [solar panel installation, rooftop solar installation, PV module mounting]
+      hi: [सोलर पैनल लगाना]
+      mr: [सौर पॅनेल बसवणे]
+  - code: solar-inverter-maintenance
+    name: Solar Inverter Servicing
+    type: TECHNICAL
+    description: Troubleshooting and servicing grid-tie solar inverters.
+    aliases:
+      en: [inverter maintenance, grid-tie inverter servicing, solar inverter repair]
+  - code: solar-site-survey
+    name: Solar Site Survey
+    type: DOMAIN
+    description: Assessing roofs, shading and loads before a solar installation.
+    aliases:
+      en: [shadow analysis, rooftop site assessment]
+  - code: work-at-height
+    name: Working at Height Safety
+    type: SAFETY
+    description: Using harnesses, ladders and edge protection safely.
+    aliases:
+      en: [height safety, safety harness use]
+      hi: [ऊंचाई पर काम सुरक्षा]
+      mr: [उंचीवर काम सुरक्षा]
+  - code: customer-communication
+    name: Customer Communication
+    type: CORE
+    description: Explaining faults, costs and safe use to customers.
+    aliases:
+      en: [customer handling, communication skills]
+      hi: [ग्राहक से बातचीत]
+      mr: [ग्राहकांशी संवाद]
+
+# -----------------------------------------------------------------------------
+# Demo job roles. importance 0..1 and band 1 (assist) .. 4 (lead) are team assumptions.
+# posting_share = share of this role's synthetic job ads that name the skill
+# (1.0 = every ad). The share is applied as an exact count per district and quarter, so
+# skill-mention counts do not depend on the seed.
+# nsqf_level and occupation codes are left empty on purpose (never invented).
+# -----------------------------------------------------------------------------
+roles:
+  - code: electrician
+    title: Electrician
+    sector: ELECTRICAL
+    description: Installs and maintains electrical wiring, panels and equipment.
+    aliases: [Electrical Technician]
+    titles:
+      en: [Electrician, Industrial Electrician, Maintenance Electrician, Electrician (ITI), Building Electrician]
+      hi: [इलेक्ट्रीशियन]
+      mr: [इलेक्ट्रिशियन]
+    salary_monthly_inr: {min: 13000, max: 20000}
+    experience_years: [[0, 2], [1, 3], [2, 5]]
+    skills:
+      - {skill: electrical-wiring, importance: 1.0, band: 3, posting_share: 1.0}
+      - {skill: electrical-safety, importance: 0.9, band: 3, posting_share: 1.0}
+      - {skill: electrical-testing, importance: 0.7, band: 2, posting_share: 0.5}
+      - {skill: earthing, importance: 0.6, band: 2, posting_share: 0.4}
+      - {skill: panel-wiring, importance: 0.6, band: 2, posting_share: 0.3}
+      - {skill: motor-maintenance, importance: 0.5, band: 2, posting_share: 0.3}
+      - {skill: cable-installation, importance: 0.5, band: 2, posting_share: 0.3}
+      - {skill: ev-charging-systems, importance: 0.5, band: 2, posting_share: 0.15}
+      - {skill: customer-communication, importance: 0.3, band: 2, posting_share: 0.2}
+  - code: wireman
+    title: Wireman
+    sector: ELECTRICAL
+    description: Carries out house and building wiring under an electrician or contractor.
+    aliases: [Wiring Helper]
+    titles:
+      en: [Wireman, Electrical Wireman, House Wiring Technician]
+      hi: [वायरमैन]
+      mr: [वायरमन]
+    salary_monthly_inr: {min: 11000, max: 16000}
+    experience_years: [[0, 1], [0, 2], [1, 3]]
+    skills:
+      - {skill: electrical-wiring, importance: 1.0, band: 2, posting_share: 1.0}
+      - {skill: electrical-safety, importance: 0.8, band: 2, posting_share: 1.0}
+      - {skill: earthing, importance: 0.7, band: 2, posting_share: 0.6}
+      - {skill: cable-installation, importance: 0.7, band: 2, posting_share: 0.6}
+      - {skill: electrical-testing, importance: 0.4, band: 1, posting_share: 0.2}
+  - code: motor-rewinder
+    title: Motor Rewinding Technician
+    sector: ELECTRICAL
+    description: Repairs burnt motors by rewinding their coils.
+    aliases: [Motor Rewinder]
+    titles:
+      en: [Motor Rewinder, Motor Winding Technician, Rewinding Mechanic]
+      hi: [मोटर वाइंडर]
+      mr: [मोटर वाइंडर]
+    salary_monthly_inr: {min: 11000, max: 17000}
+    experience_years: [[1, 3], [2, 5]]
+    skills:
+      - {skill: motor-rewinding, importance: 1.0, band: 3, posting_share: 1.0}
+      - {skill: motor-maintenance, importance: 0.7, band: 2, posting_share: 0.6}
+      - {skill: electrical-testing, importance: 0.5, band: 2, posting_share: 0.4}
+      - {skill: electrical-safety, importance: 0.5, band: 2, posting_share: 0.3}
+  - code: ev-service-technician
+    title: EV Service Technician
+    sector: EV
+    description: Diagnoses and services electric two-, three- and four-wheelers.
+    aliases: [EV Technician, Electric Vehicle Mechanic]
+    titles:
+      en: [EV Service Technician, EV Technician, Electric Vehicle Mechanic, EV Workshop Technician]
+      hi: [ईवी सर्विस तकनीशियन]
+      mr: [ईव्ही सर्व्हिस टेक्निशियन]
+    salary_monthly_inr: {min: 15000, max: 24000}
+    experience_years: [[0, 1], [1, 3], [2, 4]]
+    skills:
+      - {skill: ev-diagnostics, importance: 1.0, band: 3, posting_share: 1.0}
+      - {skill: battery-management, importance: 0.9, band: 3, posting_share: 1.0}
+      - {skill: hv-safety, importance: 0.9, band: 3, posting_share: 1.0}
+      - {skill: ev-motor-controller, importance: 0.7, band: 2, posting_share: 0.5}
+      - {skill: electrical-testing, importance: 0.6, band: 2, posting_share: 0.4}
+      - {skill: electrical-safety, importance: 0.6, band: 2, posting_share: 0.3}
+      - {skill: ev-charging-systems, importance: 0.4, band: 2, posting_share: 0.2}
+      - {skill: customer-communication, importance: 0.3, band: 2, posting_share: 0.3}
+  - code: ev-charging-installer
+    title: EV Charger Installation Technician
+    sector: EV
+    description: Installs, commissions and maintains EV chargers.
+    aliases: [EV Charging Technician]
+    titles:
+      en: [EV Charger Installation Technician, EV Charging Technician, Charging Station Installer]
+      hi: [ईवी चार्जर इंस्टॉलेशन तकनीशियन]
+      mr: [ईव्ही चार्जर इन्स्टॉलेशन टेक्निशियन]
+    salary_monthly_inr: {min: 14000, max: 22000}
+    experience_years: [[0, 2], [1, 3]]
+    skills:
+      - {skill: ev-charging-systems, importance: 1.0, band: 3, posting_share: 1.0}
+      - {skill: electrical-wiring, importance: 0.7, band: 3, posting_share: 0.6}
+      - {skill: earthing, importance: 0.7, band: 2, posting_share: 0.6}
+      - {skill: electrical-safety, importance: 0.7, band: 2, posting_share: 0.5}
+      - {skill: cable-installation, importance: 0.6, band: 2, posting_share: 0.5}
+      - {skill: hv-safety, importance: 0.5, band: 2, posting_share: 0.3}
+      - {skill: electrical-testing, importance: 0.5, band: 2, posting_share: 0.4}
+  - code: solar-pv-installer
+    title: Solar PV Installer
+    sector: SOLAR_PV
+    description: Installs rooftop solar PV systems.
+    aliases: [Rooftop Solar Installer]
+    titles:
+      en: [Solar PV Installer, Rooftop Solar Installer, Solar Panel Fitter]
+      hi: [सोलर पैनल इंस्टॉलर]
+      mr: [सोलर पॅनल इन्स्टॉलर]
+    salary_monthly_inr: {min: 12000, max: 18000}
+    experience_years: [[0, 1], [0, 2], [1, 3]]
+    skills:
+      - {skill: solar-pv-installation, importance: 1.0, band: 3, posting_share: 1.0}
+      - {skill: work-at-height, importance: 0.7, band: 2, posting_share: 0.6}
+      - {skill: electrical-safety, importance: 0.6, band: 2, posting_share: 0.4}
+      - {skill: solar-site-survey, importance: 0.5, band: 2, posting_share: 0.3}
+      - {skill: electrical-wiring, importance: 0.5, band: 2, posting_share: 0.3}
+  - code: solar-service-technician
+    title: Solar PV Service Technician
+    sector: SOLAR_PV
+    description: Maintains solar plants and repairs inverters.
+    aliases: [Solar O&M Technician]
+    titles:
+      en: [Solar Service Technician, Solar O&M Technician, Solar Inverter Technician]
+      hi: [सोलर सर्विस तकनीशियन]
+      mr: [सोलर सर्व्हिस टेक्निशियन]
+    salary_monthly_inr: {min: 14000, max: 21000}
+    experience_years: [[1, 3], [2, 4]]
+    skills:
+      - {skill: solar-inverter-maintenance, importance: 1.0, band: 3, posting_share: 1.0}
+      - {skill: electrical-testing, importance: 0.7, band: 2, posting_share: 0.6}
+      - {skill: solar-pv-installation, importance: 0.6, band: 2, posting_share: 0.5}
+      - {skill: electrical-safety, importance: 0.6, band: 2, posting_share: 0.4}
+      - {skill: customer-communication, importance: 0.3, band: 2, posting_share: 0.2}
+
+# Career steps (the role ladder). Training hours are demo assumptions (length of the
+# matching demo short course), not official figures; null = a full programme (the
+# Electrician ITI trade takes two years), not modelled in hours.
+career_steps:
+  - {from: wireman, to: electrician, type: PROMOTION, training_hours: null, note: Complete the Electrician trade (a two-year ITI programme).}
+  - {from: electrician, to: ev-service-technician, type: PROMOTION, training_hours: 240, note: "Add EV diagnostics, battery and HV safety training."}
+  - {from: electrician, to: ev-charging-installer, type: LATERAL, training_hours: 130, note: Add EV charger installation training.}
+  - {from: motor-rewinder, to: electrician, type: LATERAL, training_hours: null, note: Move from a declining trade to general electrical work (Electrician trade).}
+  - {from: solar-pv-installer, to: solar-service-technician, type: PROMOTION, training_hours: 120, note: Add inverter servicing and testing.}
+
+# -----------------------------------------------------------------------------
+# Training equipment. cost_inr = rough TEAM ESTIMATE per item (cost_is_estimate = true),
+# not a price list. `skills` = skill -> items needed per training batch.
+# -----------------------------------------------------------------------------
+equipment:
+  - {code: EQ-EV-SCAN-TOOL, name: EV diagnostic scan tool (training), category: EV, cost_inr: 45000, skills: {ev-diagnostics: 2}}
+  - {code: EQ-BATTERY-KIT, name: Li-ion battery pack trainer with BMS, category: EV, cost_inr: 150000, skills: {battery-management: 1}}
+  - {code: EQ-EV-CHARGER-RIG, name: AC EV charger training rig, category: EV, cost_inr: 90000, skills: {ev-charging-systems: 1}}
+  - {code: EQ-HV-SAFETY-KIT, name: "HV safety kit (insulated gloves, tools and mat)", category: Safety, cost_inr: 25000, skills: {hv-safety: 4}}
+  - {code: EQ-EV-MOTOR-TRAINER, name: BLDC motor and controller trainer, category: EV, cost_inr: 60000, skills: {ev-motor-controller: 1}}
+  - {code: EQ-MULTIMETER, name: Digital multimeter, category: Measurement, cost_inr: 3000, skills: {electrical-testing: 10}}
+  - {code: EQ-INSULATION-TESTER, name: Insulation resistance tester, category: Measurement, cost_inr: 18000, skills: {electrical-testing: 2}}
+  - {code: EQ-EARTH-TESTER, name: Earth resistance tester, category: Measurement, cost_inr: 15000, skills: {earthing: 1}}
+  - {code: EQ-WIRING-BOARD, name: Wiring practice board, category: Electrical, cost_inr: 8000, skills: {electrical-wiring: 10}}
+  - {code: EQ-PANEL-TRAINER, name: Control panel wiring trainer, category: Electrical, cost_inr: 40000, skills: {panel-wiring: 2}}
+  - {code: EQ-CABLE-TOOLS, name: Cable crimping and jointing tool set, category: Electrical, cost_inr: 12000, skills: {cable-installation: 4}}
+  - {code: EQ-MOTOR-TRAINER, name: AC/DC motor training set, category: Electrical, cost_inr: 60000, skills: {motor-maintenance: 2}}
+  - {code: EQ-WINDING-MACHINE, name: Coil winding machine, category: Electrical, cost_inr: 20000, skills: {motor-rewinding: 2}}
+  - {code: EQ-SAFETY-PPE, name: Electrical safety PPE set, category: Safety, cost_inr: 5000, skills: {electrical-safety: 10}}
+  - {code: EQ-SOLAR-PV-KIT, name: Rooftop solar PV training kit (1 kW), category: Solar, cost_inr: 120000, skills: {solar-pv-installation: 1}}
+  - {code: EQ-INVERTER-TRAINER, name: Grid-tie inverter trainer, category: Solar, cost_inr: 70000, skills: {solar-inverter-maintenance: 1}}
+  - {code: EQ-SITE-SURVEY-KIT, name: "Solar site survey kit (shade analyser, meters)", category: Solar, cost_inr: 25000, skills: {solar-site-survey: 1}}
+  - {code: EQ-HARNESS-SET, name: Full-body safety harness set, category: Safety, cost_inr: 6000, skills: {work-at-height: 6}}
+
+# -----------------------------------------------------------------------------
+# Demo courses: SIMPLIFIED DEMO SYLLABI (a few modules each), not official DGT/NSQF
+# syllabi. `skills` = skill -> band taught (1 assist .. 4 lead).
+# ITI trades are annual programmes of `programme_years` years; their total hours are not
+# modelled (duration_hours null), and module hours are the demo modules only.
+# primary_role = the job the course trains for (training supply is counted for it);
+# secondary_roles = other jobs graduates commonly move into (used for skill coverage).
+# -----------------------------------------------------------------------------
+courses:
+  # PP2: the golden-path course. Teaches none of EV Diagnostics, Battery Management or
+  # EV Charging Systems.
+  - code: demo-electrician
+    name: Electrician (demo syllabus)
+    type: ITI_TRADE
+    sector: ELECTRICAL
+    primary_role: electrician
+    secondary_roles: [ev-service-technician]
+    syllabus_version: demo-v1 (not official)
+    delivery: annual
+    programme_years: 2
+    duration_hours: null
+    trainers_per_offering: 2
+    trainer_certifications: [Instructor training certificate (demo record)]
+    placement_types: {WAGE: 0.8, SELF_EMPLOYED: 0.1, APPRENTICESHIP: 0.1}
+    modules:
+      - {title: Electrical Wiring, hours: 120, skills: {electrical-wiring: 3, earthing: 2, electrical-testing: 1, cable-installation: 1}}
+      - {title: Electrical Safety, hours: 40, skills: {electrical-safety: 3, hv-safety: 1}}
+      - {title: Basic Motors, hours: 60, skills: {motor-maintenance: 2}}
+      - {title: Motor Rewinding, hours: 60, skills: {motor-rewinding: 3}}
+  - code: demo-wireman
+    name: Wireman (demo syllabus)
+    type: ITI_TRADE
+    sector: ELECTRICAL
+    primary_role: wireman
+    secondary_roles: []
+    syllabus_version: demo-v1 (not official)
+    delivery: annual
+    programme_years: 2
+    duration_hours: null
+    trainers_per_offering: 2
+    trainer_certifications: [Instructor training certificate (demo record)]
+    placement_types: {WAGE: 0.6, SELF_EMPLOYED: 0.3, APPRENTICESHIP: 0.1}
+    modules:
+      - {title: Domestic Wiring Practice, hours: 100, skills: {electrical-wiring: 2, earthing: 2}}
+      - {title: Cable Laying and Jointing, hours: 50, skills: {cable-installation: 2}}
+      - {title: Electrical Safety Basics, hours: 30, skills: {electrical-safety: 2}}
+  # PP6: the course that already teaches EV skills.
+  - code: demo-ev-technician
+    name: EV Service Technician (demo short course)
+    type: SHORT_TERM
+    sector: EV
+    primary_role: ev-service-technician
+    secondary_roles: []
+    syllabus_version: demo-v1 (not official)
+    delivery: short
+    duration_days: 90
+    duration_hours: 240
+    trainers_per_offering: 2
+    trainer_certifications: [EV high-voltage safety training (demo record)]
+    placement_types: {WAGE: 0.85, APPRENTICESHIP: 0.15}
+    modules:
+      - {title: High-Voltage Safety for EVs, hours: 30, skills: {hv-safety: 3, electrical-safety: 2}}
+      - {title: EV Diagnostics, hours: 80, skills: {ev-diagnostics: 3, electrical-testing: 2}}
+      - {title: Battery Management Systems, hours: 60, skills: {battery-management: 3}}
+      - {title: EV Motor and Controller Basics, hours: 50, skills: {ev-motor-controller: 2}}
+      - {title: Customer Handling, hours: 20, skills: {customer-communication: 2}}
+  - code: demo-ev-charging
+    name: EV Charger Installation (demo short course)
+    type: SHORT_TERM
+    sector: EV
+    primary_role: ev-charging-installer
+    secondary_roles: []
+    syllabus_version: demo-v1 (not official)
+    delivery: short
+    duration_days: 60
+    duration_hours: 130
+    trainers_per_offering: 2
+    trainer_certifications: [EV charger installation training (demo record)]
+    placement_types: {WAGE: 0.8, SELF_EMPLOYED: 0.05, APPRENTICESHIP: 0.15}
+    modules:
+      - {title: EV Charging Systems, hours: 60, skills: {ev-charging-systems: 3}}
+      - {title: Wiring and Earthing for Chargers, hours: 40, skills: {electrical-wiring: 2, earthing: 2, cable-installation: 2}}
+      - {title: Safety and Testing, hours: 30, skills: {electrical-safety: 2, hv-safety: 2, electrical-testing: 2}}
+  - code: demo-solar-pv
+    name: Solar PV Installer (demo short course)
+    type: SHORT_TERM
+    sector: SOLAR_PV
+    primary_role: solar-pv-installer
+    secondary_roles: [solar-service-technician]
+    syllabus_version: demo-v1 (not official)
+    delivery: short
+    duration_days: 75
+    duration_hours: 180
+    trainers_per_offering: 2
+    trainer_certifications: [Solar installation training (demo record)]
+    placement_types: {WAGE: 0.8, SELF_EMPLOYED: 0.1, APPRENTICESHIP: 0.1}
+    modules:
+      - {title: Site Survey, hours: 20, skills: {solar-site-survey: 2}}
+      - {title: PV Installation, hours: 80, skills: {solar-pv-installation: 3, work-at-height: 2}}
+      - {title: Inverters and Commissioning, hours: 50, skills: {solar-inverter-maintenance: 2, electrical-testing: 2}}
+      - {title: Electrical Safety on Site, hours: 30, skills: {electrical-safety: 2}}
+
+# -----------------------------------------------------------------------------
+# Fictional institutes and their course offerings per academic year (seats, seats filled,
+# completion rate, placement rate among completers). A cohort is keyed by the academic
+# year in which it COMPLETES (Aug -> Jul); a two-year ITI trade cohort enrolled a year
+# earlier. Short courses run in batches through the year.
+#   PP3: Kolhapur wireman seats stay high while wireman demand shrinks; placement ~0.3.
+#   PP6: Example EV Skills Centre E (Pune) teaches EV skills and places best.
+#   Nashik has no course that teaches EV skills (PP1/PP2: EV supply stays low).
+# -----------------------------------------------------------------------------
+institutes:
+  - code: EX-ITI-A
+    name: Example ITI A, Nashik
+    type: ITI
+    ownership: GOVERNMENT
+    district: MH-NASHIK
+    offerings:
+      - course: demo-electrician
+        seats: 60
+        cohorts:
+          "2024-25": {filled: 58, completion: 0.88, placement: 0.55}
+          "2025-26": {filled: 57, completion: 0.86, placement: 0.52}
+      - course: demo-wireman
+        seats: 60
+        cohorts:
+          "2024-25": {filled: 53, completion: 0.85, placement: 0.47}
+          "2025-26": {filled: 52, completion: 0.85, placement: 0.45}
+  - code: EX-ITI-B
+    name: Example ITI B, Nashik
+    type: ITI
+    ownership: PRIVATE
+    district: MH-NASHIK
+    offerings:
+      - course: demo-electrician
+        seats: 40
+        cohorts:
+          "2024-25": {filled: 36, completion: 0.83, placement: 0.56}
+          "2025-26": {filled: 35, completion: 0.86, placement: 0.54}
+  - code: EX-TC-C
+    name: Example Skill Centre C, Nashik
+    type: PMKVY_TC
+    ownership: PRIVATE
+    district: MH-NASHIK
+    offerings:
+      - course: demo-solar-pv
+        seats: 60
+        cohorts:
+          "2024-25": {filled: 52, completion: 0.90, placement: 0.63}
+          "2025-26": {filled: 55, completion: 0.91, placement: 0.65}
+  - code: EX-ITI-D
+    name: Example ITI D, Pune
+    type: ITI
+    ownership: GOVERNMENT
+    district: MH-PUNE
+    offerings:
+      - course: demo-electrician
+        seats: 60
+        cohorts:
+          "2024-25": {filled: 59, completion: 0.90, placement: 0.60}
+          "2025-26": {filled: 58, completion: 0.90, placement: 0.62}
+      - course: demo-wireman
+        seats: 60
+        cohorts:
+          "2024-25": {filled: 54, completion: 0.90, placement: 0.52}
+          "2025-26": {filled: 52, completion: 0.90, placement: 0.50}
+  - code: EX-TC-E
+    name: Example EV Skills Centre E, Pune
+    type: PMKVY_TC
+    ownership: PRIVATE
+    district: MH-PUNE
+    offerings:
+      - course: demo-ev-technician
+        seats: 40
+        cohorts:
+          "2024-25": {filled: 38, completion: 0.92, placement: 0.82, retention_6m: 0.85}
+          "2025-26": {filled: 40, completion: 0.93, placement: 0.84, retention_6m: 0.85}
+      - course: demo-ev-charging
+        seats: 30
+        cohorts:
+          "2024-25": {filled: 28, completion: 0.93, placement: 0.79, retention_6m: 0.85}
+          "2025-26": {filled: 30, completion: 0.93, placement: 0.80, retention_6m: 0.85}
+  - code: EX-ITI-F
+    name: Example ITI F, Pune
+    type: ITI
+    ownership: PRIVATE
+    district: MH-PUNE
+    offerings:
+      - course: demo-electrician
+        seats: 40
+        cohorts:
+          "2024-25": {filled: 37, completion: 0.86, placement: 0.58}
+          "2025-26": {filled: 38, completion: 0.87, placement: 0.60}
+      - course: demo-solar-pv
+        seats: 60
+        cohorts:
+          "2024-25": {filled: 50, completion: 0.90, placement: 0.66}
+          "2025-26": {filled: 54, completion: 0.90, placement: 0.68}
+  - code: EX-ITI-G
+    name: Example ITI G, Nagpur
+    type: ITI
+    ownership: GOVERNMENT
+    district: MH-NAGPUR
+    offerings:
+      - course: demo-electrician
+        seats: 60
+        cohorts:
+          "2024-25": {filled: 55, completion: 0.87, placement: 0.54}
+          "2025-26": {filled: 56, completion: 0.87, placement: 0.55}
+      - course: demo-wireman
+        seats: 60
+        cohorts:
+          "2024-25": {filled: 55, completion: 0.85, placement: 0.48}
+          "2025-26": {filled: 54, completion: 0.85, placement: 0.47}
+  - code: EX-TC-H
+    name: Example Training Centre H, Nagpur
+    type: PMKVY_TC
+    ownership: PRIVATE
+    district: MH-NAGPUR
+    offerings:
+      - course: demo-solar-pv
+        seats: 60
+        cohorts:
+          "2024-25": {filled: 54, completion: 0.90, placement: 0.64}
+          "2025-26": {filled: 56, completion: 0.90, placement: 0.66}
+      - course: demo-ev-charging
+        seats: 30
+        cohorts:
+          "2024-25": {filled: 24, completion: 0.90, placement: 0.70}
+          "2025-26": {filled: 26, completion: 0.92, placement: 0.72}
+  - code: EX-ITI-J
+    name: Example ITI J, Kolhapur
+    type: ITI
+    ownership: GOVERNMENT
+    district: MH-KOLHAPUR
+    offerings:
+      - course: demo-wireman
+        seats: 80
+        cohorts:
+          "2024-25": {filled: 78, completion: 0.91, placement: 0.31, retention_6m: 0.60}
+          "2025-26": {filled: 76, completion: 0.90, placement: 0.29, retention_6m: 0.60}
+      - course: demo-electrician
+        seats: 40
+        cohorts:
+          "2024-25": {filled: 36, completion: 0.86, placement: 0.50}
+          "2025-26": {filled: 35, completion: 0.86, placement: 0.49}
+  - code: EX-ITI-K
+    name: Example ITI K, Kolhapur
+    type: ITI
+    ownership: PRIVATE
+    district: MH-KOLHAPUR
+    offerings:
+      - course: demo-wireman
+        seats: 60
+        cohorts:
+          "2024-25": {filled: 58, completion: 0.90, placement: 0.30, retention_6m: 0.60}
+          "2025-26": {filled: 57, completion: 0.89, placement: 0.28, retention_6m: 0.60}
+
+# -----------------------------------------------------------------------------
+# Fictional employers. Each answers the employer survey once per quarter.
+# survey_roles: role -> [headcount needed in the next 12 months in the FIRST quarter,
+#               in the LAST quarter]; quarters in between are interpolated.
+# survey_skills: skill -> first quarter it is named (null = from the first quarter).
+#   PP7: EV headcounts in Nashik and Pune rise; electrical contractors start asking
+#   for EV charging skills in 2026Q1.
+# -----------------------------------------------------------------------------
+employers:
+  - code: EX-EMP-NSK-01
+    name: Example EV Service Hub, Nashik
+    district: MH-NASHIK
+    sector: EV
+    size: SMALL
+    msme: true
+    business_type: EV service workshop
+    language: mr
+    apprenticeship: "YES"
+    apprentices_possible: 3
+    survey_roles: {ev-service-technician: [2, 8], ev-charging-installer: [1, 3]}
+    survey_skills: {ev-diagnostics: null, battery-management: null, hv-safety: null}
+  - code: EX-EMP-NSK-02
+    name: Example Auto Components Unit, Nashik
+    district: MH-NASHIK
+    sector: EV
+    size: MEDIUM
+    msme: true
+    business_type: EV component manufacturing
+    language: en
+    apprenticeship: "YES"
+    apprentices_possible: 6
+    survey_roles: {ev-service-technician: [3, 12], electrician: [4, 5]}
+    survey_skills: {battery-management: null, hv-safety: null, ev-diagnostics: "2025Q4"}
+  - code: EX-EMP-NSK-03
+    name: Example Charge Point Services, Nashik
+    district: MH-NASHIK
+    sector: EV
+    size: SMALL
+    msme: true
+    business_type: EV charger installation and maintenance
+    language: en
+    apprenticeship: "YES"
+    apprentices_possible: 2
+    survey_roles: {ev-charging-installer: [2, 7]}
+    survey_skills: {ev-charging-systems: null, earthing: null}
+  - code: EX-EMP-NSK-04
+    name: Example Electricals and Contractors, Nashik
+    district: MH-NASHIK
+    sector: ELECTRICAL
+    size: SMALL
+    msme: true
+    business_type: Electrical contracting
+    language: mr
+    apprenticeship: "MAYBE"
+    apprentices_possible: 2
+    survey_roles: {electrician: [4, 4], wireman: [3, 2], ev-charging-installer: [0, 2]}
+    survey_skills: {electrical-wiring: null, electrical-safety: null, ev-charging-systems: "2026Q1"}
+  - code: EX-EMP-NSK-05
+    name: Example Motor Works, Nashik
+    district: MH-NASHIK
+    sector: ELECTRICAL
+    size: MICRO
+    msme: true
+    business_type: Motor repair workshop
+    language: mr
+    apprenticeship: "NO"
+    apprentices_possible: 0
+    survey_roles: {motor-rewinder: [2, 1], electrician: [1, 1]}
+    survey_skills: {motor-rewinding: null, motor-maintenance: null}
+  - code: EX-EMP-NSK-06
+    name: Example Solar Rooftops, Nashik
+    district: MH-NASHIK
+    sector: SOLAR_PV
+    size: SMALL
+    msme: true
+    business_type: Rooftop solar installation
+    language: en
+    apprenticeship: "YES"
+    apprentices_possible: 2
+    survey_roles: {solar-pv-installer: [2, 5], solar-service-technician: [1, 2]}
+    survey_skills: {solar-pv-installation: null, work-at-height: null}
+  - code: EX-EMP-PUN-01
+    name: Example EV Workshop, Pune
+    district: MH-PUNE
+    sector: EV
+    size: SMALL
+    msme: true
+    business_type: EV service workshop
+    language: en
+    apprenticeship: "YES"
+    apprentices_possible: 4
+    survey_roles: {ev-service-technician: [3, 10], ev-charging-installer: [1, 3]}
+    survey_skills: {ev-diagnostics: null, battery-management: null, hv-safety: null}
+  - code: EX-EMP-PUN-02
+    name: Example Charging Networks, Pune
+    district: MH-PUNE
+    sector: EV
+    size: MEDIUM
+    msme: false
+    business_type: EV charging network operator
+    language: en
+    apprenticeship: "YES"
+    apprentices_possible: 5
+    survey_roles: {ev-charging-installer: [3, 9]}
+    survey_skills: {ev-charging-systems: null, electrical-testing: "2025Q4"}
+  - code: EX-EMP-PUN-03
+    name: Example Electrical Services, Pune
+    district: MH-PUNE
+    sector: ELECTRICAL
+    size: SMALL
+    msme: true
+    business_type: Electrical contracting
+    language: hi
+    apprenticeship: "MAYBE"
+    apprentices_possible: 2
+    survey_roles: {electrician: [5, 5], wireman: [2, 2], ev-charging-installer: [0, 2]}
+    survey_skills: {electrical-wiring: null, panel-wiring: null, ev-charging-systems: "2026Q1"}
+  - code: EX-EMP-PUN-04
+    name: Example Solar Integrators, Pune
+    district: MH-PUNE
+    sector: SOLAR_PV
+    size: MEDIUM
+    msme: true
+    business_type: Solar EPC contractor
+    language: en
+    apprenticeship: "YES"
+    apprentices_possible: 4
+    survey_roles: {solar-pv-installer: [3, 7], solar-service-technician: [1, 3]}
+    survey_skills: {solar-pv-installation: null, solar-inverter-maintenance: null}
+  - code: EX-EMP-NGP-01
+    name: Example Power Contractors, Nagpur
+    district: MH-NAGPUR
+    sector: ELECTRICAL
+    size: MEDIUM
+    msme: true
+    business_type: Electrical contracting
+    language: hi
+    apprenticeship: "MAYBE"
+    apprentices_possible: 3
+    survey_roles: {electrician: [5, 5], wireman: [3, 3]}
+    survey_skills: {electrical-wiring: null, cable-installation: null}
+  - code: EX-EMP-NGP-02
+    name: Example Solar EPC, Nagpur
+    district: MH-NAGPUR
+    sector: SOLAR_PV
+    size: SMALL
+    msme: true
+    business_type: Solar EPC contractor
+    language: en
+    apprenticeship: "YES"
+    apprentices_possible: 2
+    survey_roles: {solar-pv-installer: [3, 4], solar-service-technician: [1, 2]}
+    survey_skills: {solar-pv-installation: null, work-at-height: null}
+  - code: EX-EMP-NGP-03
+    name: Example Motor Repair Centre, Nagpur
+    district: MH-NAGPUR
+    sector: ELECTRICAL
+    size: MICRO
+    msme: true
+    business_type: Motor repair workshop
+    language: mr
+    apprenticeship: "NO"
+    apprentices_possible: 0
+    survey_roles: {motor-rewinder: [2, 1]}
+    survey_skills: {motor-rewinding: null}
+  - code: EX-EMP-KOP-01
+    name: Example Wiring Contractors, Kolhapur
+    district: MH-KOLHAPUR
+    sector: ELECTRICAL
+    size: SMALL
+    msme: true
+    business_type: Electrical contracting
+    language: mr
+    apprenticeship: "MAYBE"
+    apprentices_possible: 1
+    survey_roles: {wireman: [3, 2], electrician: [2, 2]}
+    survey_skills: {electrical-wiring: null, earthing: null}
+  - code: EX-EMP-KOP-02
+    name: Example Electricals, Kolhapur
+    district: MH-KOLHAPUR
+    sector: ELECTRICAL
+    size: MICRO
+    msme: true
+    business_type: Electrical shop and repairs
+    language: mr
+    apprenticeship: "NO"
+    apprentices_possible: 0
+    survey_roles: {electrician: [2, 2], wireman: [1, 1]}
+    survey_skills: {electrical-wiring: null, electrical-safety: null}
+  - code: EX-EMP-KOP-03
+    name: Example Agro Pump Services, Kolhapur
+    district: MH-KOLHAPUR
+    sector: ELECTRICAL
+    size: SMALL
+    msme: true
+    business_type: Pump and motor servicing
+    language: mr
+    apprenticeship: "MAYBE"
+    apprentices_possible: 1
+    survey_roles: {motor-rewinder: [2, 1], electrician: [1, 1]}
+    survey_skills: {motor-maintenance: null, motor-rewinding: null}
+
+# -----------------------------------------------------------------------------
+# Synthetic job postings per quarter: 2025Q2, 2025Q3, 2025Q4, 2026Q1, 2026Q2, 2026Q3.
+#   PP1: EV roles and solar installers grow in Nashik and Pune.
+#   PP3: Kolhapur wireman demand shrinks.
+#   PP4: motor-rewinder demand falls every quarter of the last four, in every district.
+# -----------------------------------------------------------------------------
+posting_schedule:
+  MH-NASHIK:
+    ev-service-technician:    [6, 8, 11, 15, 20, 27]
+    ev-charging-installer:    [3, 4, 6, 8, 11, 14]
+    electrician:              [42, 42, 43, 43, 44, 44]
+    wireman:                  [4, 4, 3, 4, 3, 3]
+    motor-rewinder:           [6, 6, 5, 4, 3, 2]
+    solar-pv-installer:       [5, 6, 8, 10, 12, 15]
+    solar-service-technician: [3, 3, 4, 4, 5, 5]
+  MH-PUNE:
+    ev-service-technician:    [10, 12, 15, 19, 24, 30]
+    ev-charging-installer:    [6, 7, 9, 12, 15, 19]
+    electrician:              [62, 62, 63, 63, 64, 64]
+    wireman:                  [5, 5, 4, 5, 4, 4]
+    motor-rewinder:           [7, 7, 6, 5, 4, 3]
+    solar-pv-installer:       [9, 10, 12, 15, 18, 22]
+    solar-service-technician: [6, 6, 7, 7, 8, 8]
+  MH-NAGPUR:
+    ev-service-technician:    [3, 4, 4, 5, 5, 6]
+    ev-charging-installer:    [2, 2, 2, 3, 3, 3]
+    electrician:              [48, 48, 49, 48, 49, 49]
+    wireman:                  [5, 4, 5, 4, 4, 5]
+    motor-rewinder:           [5, 5, 4, 3, 2, 1]
+    solar-pv-installer:       [12, 12, 13, 13, 14, 14]
+    solar-service-technician: [5, 5, 5, 6, 6, 6]
+  MH-KOLHAPUR:
+    ev-service-technician:    [2, 2, 2, 3, 3, 3]
+    ev-charging-installer:    [1, 1, 1, 2, 2, 2]
+    electrician:              [30, 30, 29, 30, 29, 29]
+    wireman:                  [6, 5, 5, 4, 4, 3]
+    motor-rewinder:           [5, 5, 4, 3, 2, 1]
+    solar-pv-installer:       [7, 7, 8, 8, 8, 9]
+    solar-service-technician: [3, 3, 3, 3, 4, 4]
+
+postings:
+  # Share of ads posted by one of the demo employers above (same district, a role they
+  # survey for); the rest come from a pool of fictional small employers.
+  directory_employer_share: 0.3
+  # A demo employer posts at most ceil(the headcount it asks for / 4) + this many ads a
+  # quarter (so a small workshop never "posts" dozens of ads).
+  directory_ads_slack: 1
+  employer_pool_size: 25
+  employer_pool_names:
+    ELECTRICAL: Example Electrical Contractor
+    EV: Example EV Garage
+    SOLAR_PV: Example Solar Installer
+  salary_stated_share: 0.7
+  text:
+    en: "Hiring: {title} at {employer}, {location}. Skills required: {skills}. Experience: {experience}."
+    hi: "आवश्यकता: {title}, {employer}, {location}। आवश्यक कौशल: {skills}। अनुभव: {experience}।"
+    mr: "पाहिजे: {title}, {employer}, {location}. आवश्यक कौशल्ये: {skills}. अनुभव: {experience}."
+  experience_text:
+    en: "{low}-{high} years"
+    hi: "{low}-{high} वर्ष"
+    mr: "{low}-{high} वर्षे"
+  # Appended to the ad text when the ad states a salary.
+  salary_text:
+    en: "Salary: Rs {low}-{high} per month."
+    hi: "वेतन: ₹{low}-{high} प्रति माह।"
+    mr: "पगार: ₹{low}-{high} दरमहा."
+  hardest_skills_text:
+    en: "Hard to find: {skills}."
+    hi: "मुश्किल से मिलने वाले कौशल: {skills}।"
+    mr: "मिळायला कठीण कौशल्ये: {skills}."
+
+# -----------------------------------------------------------------------------
+# Placement outcome defaults (overridable per cohort with retention_6m).
+# -----------------------------------------------------------------------------
+outcomes:
+  related_to_training_share: 0.85   # placed in the course's own role
+  retention_6m: 0.75                # still employed after 6 months (when known)
+  employer_link_share: 0.5          # wage jobs at one of the demo employers
+  rating_mean: {default: 3.6, demo-ev-technician: 4.4, demo-ev-charging: 4.2, demo-wireman: 3.1}
+
+# Incidental details (they change no pattern; the seed picks individual values).
+details:
+  survey_channels: {WEB: 0.40, WHATSAPP: 0.35, TELEGRAM: 0.10, PHONE: 0.15}
+  equipment_condition: {WORKING: 0.85, NEEDS_REPAIR: 0.10, NOT_WORKING: 0.05}
+  candidate_education:
+    ITI_TRADE: {CLASS_10: 0.70, CLASS_12: 0.30}
+    SHORT_TERM: {ITI: 0.50, CLASS_12: 0.25, DIPLOMA: 0.15, CLASS_10: 0.10}
+  # Chance that a candidate lists each language.
+  candidate_languages: {mr: 1.0, hi: 0.6, en: 0.4}
+  contact_consent_share: 0.7
+  # Days from course completion to the placement date.
+  placement_delay_days: {min: 15, max: 150}
+
+# -----------------------------------------------------------------------------
+# Industry events in the dataset (all hypothetical and labelled synthetic + simulated).
+# PP5: the Nashik EV unit adds jobs in quarters +2..+5 after the announcement
+# (config/scoring.yaml event_impact); announced in 2026Q2, so all four quarters
+# (2026Q4..2027Q3) fall inside the forecast horizon. The live "Simulate event" demo in
+# config/synthetic.yaml demo_event is separate and not part of this dataset.
+# -----------------------------------------------------------------------------
+sector_events:
+  - key: nashik-ev-battery-unit
+    district: MH-NASHIK
+    sector: EV
+    type: NEW_PLANT
+    title: EV battery-pack assembly unit announced (synthetic)
+    description: Hypothetical demo event. A fictional EV battery-pack assembly unit near Sinnar MIDC is announced with about 600 jobs. Not a real announcement.
+    expected_jobs: 600
+    announced_on: "2026-04-15"
+    realization_factor: 0.6
+  - key: nagpur-solar-park
+    district: MH-NAGPUR
+    sector: SOLAR_PV
+    type: PROJECT
+    title: Solar park construction project announced (synthetic)
+    description: Hypothetical demo event. A fictional solar park near Butibori needs installers for about a year. Not a real announcement.
+    expected_jobs: 250
+    announced_on: "2025-11-10"
+    realization_factor: 0.5
+
+# -----------------------------------------------------------------------------
+# Role-play consultations (Y03): written by the team, NOT real interviews.
+# -----------------------------------------------------------------------------
+consultations:
+  - key: nashik-ev-workshop
+    title: "Role-play consultation (synthetic): EV workshop owner, Nashik"
+    held_on: "2026-03-12"
+    district: MH-NASHIK
+    sector: EV
+    participant: EMPLOYER
+    notes: >-
+      SYNTHETIC ROLE-PLAY written by the team for the demo; not a real interview. The
+      fictional workshop owner says new EV service jobs need battery fault diagnosis and
+      high-voltage safety, and that ITI electricians who join need two to three months of
+      in-house training.
+    insights:
+      - {type: SKILL_GAP, skill: ev-diagnostics, summary: New hires cannot diagnose EV faults with a scan tool.}
+      - {type: SKILL_GAP, skill: battery-management, summary: Battery pack and BMS handling is learned only on the job.}
+      - {type: EQUIPMENT_NEED, skill: ev-diagnostics, summary: Trainees have never used an EV diagnostic scan tool.}
+  - key: nashik-iti-instructor
+    title: "Role-play consultation (synthetic): Electrician trade instructor, Example ITI A, Nashik"
+    held_on: "2026-04-20"
+    district: MH-NASHIK
+    sector: ELECTRICAL
+    participant: INSTRUCTOR
+    notes: >-
+      SYNTHETIC ROLE-PLAY written by the team for the demo; not a real interview. The
+      fictional instructor says the Motor Rewinding module uses a lot of workshop time
+      while trainees ask about EV charger work, and the institute has no EV charger or
+      battery training kit.
+    insights:
+      - {type: OUTDATED_TOPIC, skill: motor-rewinding, summary: Local employers rarely ask for manual motor rewinding now.}
+      - {type: SKILL_GAP, skill: ev-charging-systems, summary: Trainees ask for EV charger installation practice; it is not in the syllabus.}
+      - {type: EQUIPMENT_NEED, skill: ev-charging-systems, summary: The institute has no EV charger training rig.}
+
+# -----------------------------------------------------------------------------
+# What the validator checks (python -m app.cli.synthetic validate).
+# -----------------------------------------------------------------------------
+pattern_targets:
+  ev_skills: [ev-diagnostics, battery-management, ev-charging-systems]
+  solar_skills: [solar-pv-installation]
+  golden_course:
+    institute: EX-ITI-A
+    course: demo-electrician
+    ev_role: ev-service-technician
+    modules: [Electrical Wiring, Electrical Safety, Basic Motors, Motor Rewinding]
+  oversupply: {district: MH-KOLHAPUR, role: wireman}
+  declining: {skill: motor-rewinding, role: motor-rewinder}
+  event: nashik-ev-battery-unit
+  ev_training_institute: EX-TC-E
+
+# Plausibility limits for generated values ("no absurd numbers"); checked by the validator.
+sanity:
+  monthly_salary_inr: {min: 8000, max: 40000}
+  seats_per_offering: {min: 10, max: 200}

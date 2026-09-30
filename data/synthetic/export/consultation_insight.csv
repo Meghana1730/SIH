@@ -1,0 +1,7 @@
+id,consultation_id,skill_id,insight_type,summary,quote,quote_approved,extracted_by,review_status,is_synthetic
+c9cffffc-733c-5b1e-8613-8011409ec44f,eb333c49-27d1-5438-82f6-9fd0988a4a1f,f0af4a4e-db42-51ed-87e3-58e26be3ece6,SKILL_GAP,New hires cannot diagnose EV faults with a scan tool.,,false,GENERATED,APPROVED,true
+7d9c44c4-5612-5ca8-8774-c3f94fa44f4c,eb333c49-27d1-5438-82f6-9fd0988a4a1f,a839ef92-1395-54fb-b1cf-f0402a1eb876,SKILL_GAP,Battery pack and BMS handling is learned only on the job.,,false,GENERATED,APPROVED,true
+61ed534f-bcc3-5624-9af3-6ef773a6777c,eb333c49-27d1-5438-82f6-9fd0988a4a1f,f0af4a4e-db42-51ed-87e3-58e26be3ece6,EQUIPMENT_NEED,Trainees have never used an EV diagnostic scan tool.,,false,GENERATED,APPROVED,true
+b3b0ef50-8f45-5ced-a8a7-cf0a62cfce01,2a26c4b7-6b19-5d77-b2ae-7a5d305437a4,3a7a7093-1c3d-5e15-94d0-dcbac3794d85,OUTDATED_TOPIC,Local employers rarely ask for manual motor rewinding now.,,false,GENERATED,APPROVED,true
+4d032538-546e-5e5e-bb46-08dfd344c04e,2a26c4b7-6b19-5d77-b2ae-7a5d305437a4,a81a6b02-0664-5e71-b730-da8e67473011,SKILL_GAP,Trainees ask for EV charger installation practice; it is not in the syllabus.,,false,GENERATED,APPROVED,true
+876d1991-2c5d-5be5-81bc-78f95501c0df,2a26c4b7-6b19-5d77-b2ae-7a5d305437a4,a81a6b02-0664-5e71-b730-da8e67473011,EQUIPMENT_NEED,The institute has no EV charger training rig.,,false,GENERATED,APPROVED,true

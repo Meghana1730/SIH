@@ -1,0 +1,37 @@
+# =============================================================================
+# KaushalSetu prototype scope: geography and languages
+# =============================================================================
+# District `code` values are OUR internal keys. Official (LGD) district codes are NOT
+# stored here; they go into data/reference only after verification (docs/01-domain.md §19).
+# Validate with:  python -m app.config
+# =============================================================================
+
+state: Maharashtra
+
+districts:
+  - code: MH-PUNE
+    name: Pune
+    aliases: [Poona]
+  - code: MH-NASHIK
+    name: Nashik
+    aliases: [Nasik]
+  - code: MH-NAGPUR
+    name: Nagpur
+    aliases: []
+  - code: MH-KOLHAPUR
+    name: Kolhapur
+    aliases: []
+  # More place names (areas, industrial estates) belong in data/reference, not here.
+
+# The district used in the main demo story (docs/03-prd.md §2).
+golden_path_district: MH-NASHIK
+
+languages:
+  # Languages the product supports at all (must be allowed by the database: en, hi, mr).
+  supported: [en, hi, mr]
+  default: en
+  # Which screens / outputs use which languages (docs/03-prd.md FR-X.3, FR-17).
+  candidate_ui: [en, hi, mr]
+  employer_ui: [en, hi, mr]
+  staff_ui: [en]
+  district_plan_pdf: [en]      # Hindi / Marathi PDF is a P1 feature

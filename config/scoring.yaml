@@ -1,0 +1,290 @@
+# =============================================================================
+# KaushalSetu scoring configuration
+# =============================================================================
+# Every weight and threshold that changes a score, flag or recommendation lives HERE,
+# not in Python code. The app stores a copy of this file (with its SHA-256 hash) for
+# every pipeline run, so each number can be traced back to the settings that made it.
+#
+# Rules for editing:
+#   * Change `version` whenever you change a value.
+#   * Every key is required. Unknown keys are rejected (so typos are caught).
+#   * Check the file with:  python -m app.config   (from backend/, venv active)
+#
+# These are TEAM ASSUMPTIONS from docs/03-prd.md §7 (and the latest team instructions),
+# not official government thresholds.
+# =============================================================================
+
+version: "v4"   # v2: skill matching; v3: job pipeline; v4: demand/supply/mismatch engine
+
+# -----------------------------------------------------------------------------
+# Demand index (0-100) per job role x district x quarter
+# -----------------------------------------------------------------------------
+demand:
+  # Share of each signal in the demand index. Must add up to 1.0.
+  weights:
+    postings: 0.35          # job postings
+    employer_survey: 0.25   # employer survey headcounts
+    growth_events: 0.20     # sector growth & industry events
+    absorption: 0.20        # how readily past trainees were placed in this role
+  # If a signal has no data for a role/district, the remaining weights are scaled up
+  # so they again add up to 1.0 (and confidence is lowered by the engine).
+  missing_components: renormalize
+  # How the survey (S) and growth/event (G) signals are scaled to 0-100 across the
+  # role x district cells of a quarter: min_max | percentile. (The posting signal P
+  # always uses percentiles, see posting_signal.)
+  normalization: min_max
+  # Only the latest answer per employer from the last N months counts.
+  survey_lookback_months: 12
+  # P = volume_weight x percentile(log(1 + postings in the quarter))
+  #   + growth_weight x percentile(growth), percentiles across all role x district
+  #     cells of the quarter. growth = postings in the second half of the window vs
+  #     the first half, clipped to [growth_min, growth_max].
+  posting_signal:
+    volume_weight: 0.6
+    growth_weight: 0.4
+    growth_window_quarters: 4
+    growth_min: -1.0
+    growth_max: 2.0
+  # S = headcount asked for in the latest survey answer of each employer, weighted by
+  # 0.5 ^ (age in quarters / half_life_quarters).
+  survey:
+    half_life_quarters: 2
+  # G = jobs expected from sector events (event_impact below) in the next
+  # lookahead_quarters after the quarter, from events announced by then.
+  growth_events:
+    lookahead_quarters: 4
+  openings:
+    # ASSUMPTION (not an official statistic): only this share of real openings
+    # appears as online postings. Estimated annual openings =
+    # postings in the last window_quarters / coverage factor of the role.
+    # To be calibrated later against official labour statistics.
+    coverage_factors:
+      formal_heavy: 0.3      # most hiring is advertised (the default for every role)
+      informal_heavy: 0.1    # most hiring is by word of mouth
+    # Role codes treated as informal-heavy. Empty until the team has evidence
+    # (consultations, surveys); changing it changes every ratio for those roles.
+    informal_heavy_roles: []
+    window_quarters: 4
+
+# -----------------------------------------------------------------------------
+# Training supply
+# -----------------------------------------------------------------------------
+supply:
+  # Used when an offering has no completion data. Assumption.
+  default_completion_rate: 0.8
+
+# -----------------------------------------------------------------------------
+# Mismatch = supply / estimated openings
+#   ratio <  undersupplied_below              -> UNDERSUPPLIED
+#   undersupplied_below <= ratio <= oversupplied_above -> BALANCED
+#   ratio >  oversupplied_above               -> OVERSUPPLIED
+# -----------------------------------------------------------------------------
+mismatch:
+  undersupplied_below: 0.7
+  oversupplied_above: 1.5
+  # District mismatch = demand-weighted mean of |log(ratio)| over the district's roles.
+  # Ratios below this floor (e.g. no local training at all) count as the floor, so
+  # one role cannot make the score infinite.
+  district_ratio_floor: 0.05
+
+# -----------------------------------------------------------------------------
+# Skill trends
+# -----------------------------------------------------------------------------
+trend:
+  window_quarters: 4
+  emerging:
+    # EMERGING if mentions in the second half of the window (the last 2 quarters) grew by
+    # at least this share over the first half (the 2 quarters before) ...
+    min_relative_growth: 0.25
+    # ... AND the second half of the window has at least this many mentions,
+    min_mentions: 20
+    # ... OR there is a strong, verified external trend.
+    # "Strong" has NOT been defined yet (no official threshold exists), so this route
+    # stays switched off until the team agrees `min_signal_value`.
+    external_trend:
+      enabled: false
+      require_verified_source: true
+      min_signal_value: null
+  declining:
+    # DECLINING if mentions dropped this many quarters in a row ...
+    consecutive_quarter_drops: 3
+    # ... AND fell by at least this share in total.
+    min_relative_decline: 0.20
+
+# -----------------------------------------------------------------------------
+# Course health (0-100) per course offering
+# -----------------------------------------------------------------------------
+course_health:
+  # Must add up to 1.0.
+  # NOTE: docs/03-prd.md §7.7 used "retention (6 months)" and "wage" for the two 0.10
+  # slots. This file follows the newer team instruction (work_relevance, recency).
+  # TODO(team): define `recency` precisely and update the PRD to match.
+  weights:
+    placement_rate: 0.30    # completers who were placed
+    work_relevance: 0.10    # placements in work related to the training
+    recency: 0.10           # how recent the course's evidence/syllabus is (definition TODO)
+    demand_trend: 0.20      # demand trend of the roles the course prepares for
+    skill_coverage: 0.30    # share of in-demand skills the course teaches
+  # Placement rate uses the last N completed cohorts.
+  placement_lookback_cohorts: 2
+  coverage:
+    # A skill taught below the required band counts this much (1.0 = fully covered).
+    partial_credit: 0.5
+    # In-demand EMERGING skills count this many times more when measuring coverage.
+    emerging_skill_importance_multiplier: 1.5
+  oversupply_penalty:
+    # Points subtracted when the course's main role is OVERSUPPLIED, rising linearly from
+    # 0 at mismatch.oversupplied_above to max_points at full_penalty_at_ratio.
+    max_points: 20
+    full_penalty_at_ratio: 3.0
+  flags:
+    outdated_coverage_below: 0.5     # OUTDATED
+    at_risk_score_below: 50          # AT_RISK
+    low_placement_rate_below: 0.40   # LOW_PLACEMENT
+
+# -----------------------------------------------------------------------------
+# Forecast (indicative)
+# -----------------------------------------------------------------------------
+forecast:
+  method: linear_trend
+  history_quarters: 6        # quarters of history used for the trend line
+  horizon_quarters: 6        # quarters forecast ahead (database allows 1-12)
+  interval_fraction: 0.20    # shaded range = forecast +/- 20%
+
+# -----------------------------------------------------------------------------
+# How industry events (e.g. a new plant) turn into future demand.
+# Used by both the demand index (growth_events) and the forecast.
+# -----------------------------------------------------------------------------
+event_impact:
+  # Share of announced jobs assumed to really appear, when the event gives none.
+  default_realization_factor: 0.6
+  # Jobs appear between these quarters after the announcement (inclusive).
+  lag_start_quarter: 2
+  lag_end_quarter: 5
+  distribution: even         # spread evenly over the lag window
+
+# -----------------------------------------------------------------------------
+# Recommendations
+# -----------------------------------------------------------------------------
+recommendations:
+  # Every recommendation needs at least this many evidence items (otherwise it is
+  # marked "limited evidence" with LOW confidence). The database enforces at least 2.
+  min_evidence_items: 2
+  validation:
+    # VALIDATED when at least this many employers approve ...
+    min_approvals: 3
+    # ... and approvals outnumber rejections.
+    approvals_must_exceed_rejections: true
+  add_module:
+    # Only suggest adding a missing skill this important (0-1) for a mapped role.
+    min_skill_importance: 0.5
+  demote_module:
+    # A module is a demotion candidate when this share of its skill weight is DECLINING ...
+    min_declining_weight_share: 0.70
+    # ... and it is confirmed only after this many "not needed" employer votes.
+    min_not_needed_votes: 3
+  priority:
+    # HIGH priority also requires at least this confidence: HIGH | MEDIUM | LOW
+    high_requires_min_confidence: MEDIUM
+
+# -----------------------------------------------------------------------------
+# Confidence labels shown next to every number
+#   combine: all = every minimum must be met; any = one is enough
+# -----------------------------------------------------------------------------
+confidence:
+  high:
+    min_source_types: 3
+    min_records: 30
+    combine: all
+  medium:
+    min_source_types: 2
+    min_records: 10
+    combine: any
+
+# -----------------------------------------------------------------------------
+# Candidate course guidance
+# -----------------------------------------------------------------------------
+candidate_guidance:
+  top_n: 3
+  # Must add up to 1.0.
+  ranking_weights:
+    local_placement_rate: 0.4
+    demand_trend: 0.3
+    interest_match: 0.2
+    proximity: 0.1
+  proximity_scores:
+    same_district: 1.0
+    other_district: 0.5
+
+# -----------------------------------------------------------------------------
+# Skill matching (NLP) confidence thresholds
+# -----------------------------------------------------------------------------
+skill_matching:
+  auto_accept_confidence: 0.85   # at or above: accepted automatically
+  min_confidence: 0.60           # below: discarded (logged); in between: human review queue
+  default_band: 2                # proficiency band when a posting gives no clue (1-4)
+  # Matching order: exact name (confidence 1.0) -> alias -> fuzzy -> embedding -> optional LLM.
+  # Confidence given to a match on a curated alias.
+  alias_confidence: 1.0
+  fuzzy:
+    # Spelling similarity (rapidfuzz token-sort ratio, 0-1) needed to accept a variant
+    # such as "EV diagnostcs" for "EV Diagnostics". Its confidence is this similarity.
+    min_score: 0.88
+    # Shorter inputs skip fuzzy matching: edit distance is unreliable on very short text.
+    min_input_length: 4
+  embedding:
+    # Nearest skills/aliases fetched from pgvector (also shown as alternatives for review).
+    top_k: 5
+  # An LLM's choice is capped at this confidence, so a human always reviews it.
+  llm_fallback_max_confidence: 0.80
+
+# -----------------------------------------------------------------------------
+# Job-posting pipeline (docs/06-job-intelligence.md): skills found inside whole ads
+# (uses skill_matching thresholds for decisions and fuzzy scores)
+# -----------------------------------------------------------------------------
+job_extraction:
+  # A run of words is compared with skill names/aliases of about the same length
+  # (term length +/- this many words).
+  fuzzy_extra_words: 1
+  # Single words shorter than this are never spelling-matched ("wiring" vs "firing").
+  fuzzy_min_single_word_chars: 6
+  # Leftover phrases longer than this are not sent to meaning (embedding) matching.
+  max_phrase_words: 6
+  # At most this many phrases per ad go to meaning matching (keeps big ads fast).
+  max_phrases_per_posting: 30
+  # Ask the optional LLM only when some candidate skill is at least this close (i.e. the
+  # phrase would already go to review): an LLM is never asked about unrelated words.
+  llm_min_candidate_score: 0.6
+  # Optional LLM phrase quoting (llm.yaml skill_phrase_extraction): only for ads of at
+  # least this many words in which nothing else was found.
+  llm_phrase_extraction_min_words: 8
+  # Skills an ad does not state but its matched role normally requires (INFERRED).
+  # They are always stored as "review", never counted as observed demand.
+  inferred_skills:
+    enabled: true
+    min_role_confidence: 0.85
+    min_importance: 0.9
+    confidence_factor: 0.6
+  # Requested proficiency -> band (1 assist .. 4 lead) stored with the skill link.
+  proficiency_bands: {basic: 1, intermediate: 2, advanced: 3}
+
+# -----------------------------------------------------------------------------
+# Role matching: which canonical job role an ad is for
+# -----------------------------------------------------------------------------
+role_matching:
+  auto_accept_confidence: 0.85   # at or above (and not ambiguous): accepted automatically
+  min_confidence: 0.5            # below: no role; in between: human review queue
+  title_confidence:
+    exact: 1.0          # the title IS a role title
+    alias: 1.0          # the title IS a role alias
+    contained: 0.92     # the title contains a role title/alias ("Urgent: EV Technician")
+    description: 0.75   # only the description mentions it ("EV technician required")
+  fuzzy_min_score: 0.88  # spelling similarity for misspelt titles ("Electrision")
+  # Added (x skill-profile score) when the role's own skills also appear in the ad.
+  skill_agreement_bonus: 0.15
+  # A role guessed from skills alone gets at most this confidence (so it is reviewed).
+  skills_only_factor: 0.8
+  # Two roles closer than this -> review instead of accept.
+  ambiguity_margin: 0.05
+  # Roles outside the ad's sector (when the source gives one) are multiplied by this.
+  sector_mismatch_factor: 0.8

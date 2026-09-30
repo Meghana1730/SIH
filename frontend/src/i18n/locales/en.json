@@ -1,0 +1,92 @@
+{
+  "app": {
+    "name": "KaushalSetu",
+    "tagline": "Skill intelligence for Maharashtra",
+    "state": "Maharashtra"
+  },
+  "nav": {
+    "overview": "Overview",
+    "districts": "District Intelligence",
+    "skills": "Skills",
+    "courses": "Courses",
+    "recommendations": "Recommendations",
+    "employers": "Employers",
+    "candidates": "Candidates",
+    "plans": "District Plans",
+    "admin": "Demo Controls",
+    "settings": "Settings",
+    "help": "Help",
+    "main": "Main navigation"
+  },
+  "topbar": {
+    "sector": "Sector",
+    "district": "District",
+    "quarter": "Quarter",
+    "allSectors": "All sectors",
+    "allDistricts": "All districts",
+    "latest": "Latest",
+    "notifications": "Notifications",
+    "profile": "Profile",
+    "signOut": "Sign out",
+    "language": "Language",
+    "openMenu": "Open menu"
+  },
+  "common": {
+    "loading": "Loading...",
+    "retry": "Try again",
+    "noData": "No data for these filters",
+    "viewAll": "View all",
+    "demoData": "Demo data",
+    "synthetic": "Synthetic",
+    "liveApi": "Live API",
+    "back": "Back",
+    "details": "Details",
+    "evidence": "Evidence",
+    "confidence": "Confidence",
+    "priority": "Priority",
+    "status": "Status",
+    "search": "Search",
+    "close": "Close",
+    "cancel": "Cancel",
+    "confirm": "Confirm",
+    "save": "Save",
+    "submit": "Submit"
+  },
+  "status": {
+    "UNDER_SUPPLIED": "Shortage",
+    "BALANCED": "Balanced",
+    "OVER_SUPPLIED": "Oversupply",
+    "INSUFFICIENT_DATA": "Insufficient data",
+    "HEALTHY": "Healthy",
+    "WATCH": "Watch",
+    "AT_RISK": "At risk",
+    "EMERGING": "Emerging",
+    "GROWING": "Growing",
+    "STABLE": "Stable",
+    "DECLINING": "Declining"
+  },
+  "pages": {
+    "dashboard": "Maharashtra Skill Intelligence",
+    "districts": "District Intelligence",
+    "skills": "Skills Demand",
+    "courses": "Course Health",
+    "recommendations": "Recommendations",
+    "employer": "Employer Portal",
+    "candidate": "Career Guidance",
+    "plans": "District Plans",
+    "admin": "Demo Controls",
+    "settings": "Settings",
+    "help": "Help",
+    "login": "Sign in"
+  },
+  "login": {
+    "title": "Match training to the jobs employers need",
+    "subtitle": "KaushalSetu reads job postings, employer surveys and training data to show where Maharashtra's Electrical, EV and Solar PV skills are short, and what institutes should change.",
+    "enterDemo": "Enter demo",
+    "signIn": "Sign in",
+    "email": "Email",
+    "password": "Password",
+    "demoAccounts": "Demo accounts",
+    "demoNote": "All data in this prototype is synthetic demo data, not official statistics."
+  }
+}

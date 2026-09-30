@@ -1,0 +1,27 @@
+# =============================================================================
+# KaushalSetu sectors
+# =============================================================================
+# The sectors in the prototype. `code` is OUR internal key (used in data files and the
+# database); it is not an official code. Validate with:  python -m app.config
+# =============================================================================
+
+sectors:
+  - code: ELECTRICAL
+    name: Electrical
+    description: Electrical installation, wiring, maintenance and power distribution work.
+  - code: EV
+    name: Electric Vehicles
+    description: EV service and maintenance, batteries, and EV charging equipment.
+  - code: SOLAR_PV
+    name: Solar PV
+    description: Solar photovoltaic installation, commissioning and maintenance.
+
+# How the jobs announced in an industry event (e.g. "EV plant, 1,200 jobs") are split
+# across job roles when estimating future demand.
+event_staffing:
+  # Used when a sector has no pattern below: split jobs evenly across the sector's roles.
+  fallback: even_split_across_sector_roles
+  # Role shares per sector: { SECTOR_CODE: { role_code: share, ... } }, each summing to 1.0.
+  # Empty on purpose: fill these in only after talking to employers (they are assumptions,
+  # not official figures). Role codes must match data/reference job roles.
+  patterns: {}

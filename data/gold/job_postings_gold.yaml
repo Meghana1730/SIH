@@ -1,0 +1,429 @@
+# =============================================================================
+# Job-posting pipeline evaluation set (hand-written prototype examples)
+# =============================================================================
+# 52 short job ads WRITTEN BY THE TEAM for testing (not real ads, not real employers), with
+# the skills each ad clearly asks for and the role it is for. Labels use the synthetic demo
+# vocabulary (source Y13: 18 skills, 7 roles; data/synthetic/spec/demo_world.yaml) because
+# the curated Skill Graph does not exist yet.
+#
+# Honesty notes:
+# * The same team wrote the aliases and these ads, so alias-based examples are easier than
+#   real ads will be. The "semantic", "spelling", Hindi/Marathi and "unknown" examples
+#   deliberately use wording that is NOT in the vocabulary.
+# * expected_skills  = skills the ad clearly asks for (name, alias, misspelling or clear
+#                      paraphrase). optional_skills = reasonable to find, not required.
+# * expected_role    = the role the ad is for (null = none of our roles);
+#   acceptable_roles = other roles that are also defensible for an ambiguous ad.
+#
+# Run:  python -m app.cli.jobs evaluate        (report: docs/06-job-intelligence.md)
+# =============================================================================
+
+vocabulary: KaushalSetu synthetic demo vocabulary (Y13)
+
+cases:
+  # ---------------------------------------------------------------- exact names
+  - id: G01
+    categories: [exact]
+    language: en
+    sector: EV
+    title: EV Service Technician
+    description: Workshop in Nashik needs an EV Service Technician. Must know EV Diagnostics and High-Voltage Safety.
+    expected_skills: [ev-diagnostics, hv-safety]
+    expected_role: ev-service-technician
+  - id: G02
+    categories: [exact, multi]
+    language: en
+    sector: ELECTRICAL
+    title: Electrician
+    description: Electrical Wiring and Electrical Safety work in commercial buildings. Earthing and Grounding knowledge required.
+    expected_skills: [electrical-wiring, electrical-safety, earthing]
+    expected_role: electrician
+  - id: G03
+    categories: [exact]
+    language: en
+    sector: SOLAR_PV
+    title: Solar PV Installer
+    description: Solar PV Installation on rooftops; Working at Height Safety is compulsory.
+    expected_skills: [solar-pv-installation, work-at-height]
+    expected_role: solar-pv-installer
+  - id: G04
+    categories: [exact]
+    language: en
+    title: Motor Rewinding Technician
+    description: Motor Rewinding and Basic Motor Maintenance for pumps and fans.
+    expected_skills: [motor-rewinding, motor-maintenance]
+    expected_role: motor-rewinder
+  - id: G05
+    categories: [exact]
+    language: en
+    title: Solar PV Service Technician
+    description: Solar Inverter Servicing and Electrical Testing and Measurement at client sites.
+    expected_skills: [solar-inverter-maintenance, electrical-testing]
+    expected_role: solar-service-technician
+
+  # ---------------------------------------------------------------- aliases
+  - id: G06
+    categories: [alias, multi]
+    language: en
+    sector: EV
+    title: EV Technician
+    description: EV technician required with battery diagnostics and charging station experience.
+    expected_skills: [battery-management, ev-charging-systems]
+    optional_skills: [ev-diagnostics]
+    expected_role: ev-service-technician
+    note: The example from the task brief. "battery diagnostics" is a Battery Management alias.
+  - id: G07
+    categories: [alias, multi]
+    language: en
+    title: EV Charging Technician
+    description: Install EV chargers at housing societies. EV charger installation, cable laying and earthing.
+    expected_skills: [ev-charging-systems, cable-installation, earthing]
+    expected_role: ev-charging-installer
+  - id: G08
+    categories: [alias, multi]
+    language: en
+    title: Wireman
+    description: House wiring and cable jointing for new flats. Lockout tagout rules must be followed.
+    expected_skills: [electrical-wiring, cable-installation, electrical-safety]
+    expected_role: wireman
+  - id: G09
+    categories: [alias, multi]
+    language: en
+    title: Electrician (ITI)
+    description: Industrial wiring, MCC panel wiring and megger testing in a factory.
+    expected_skills: [electrical-wiring, panel-wiring, electrical-testing]
+    expected_role: electrician
+  - id: G10
+    categories: [alias, multi]
+    language: en
+    title: Rooftop Solar Installer
+    description: Rooftop solar installation, shadow analysis before the work, and safety harness use.
+    expected_skills: [solar-pv-installation, solar-site-survey, work-at-height]
+    expected_role: solar-pv-installer
+  - id: G11
+    categories: [alias, multi]
+    language: en
+    title: Electric Vehicle Mechanic
+    description: EV fault diagnosis, BMS checks and BLDC motor servicing for e-scooters.
+    expected_skills: [ev-diagnostics, battery-management, ev-motor-controller]
+    expected_role: ev-service-technician
+  - id: G12
+    categories: [alias]
+    language: en
+    title: Motor Winding Technician
+    description: Armature winding and coil winding of submersible pump motors.
+    expected_skills: [motor-rewinding]
+    expected_role: motor-rewinder
+  - id: G13
+    categories: [alias, multi]
+    language: en
+    title: Solar O&M Technician
+    description: Grid-tie inverter servicing and insulation resistance testing at solar plants. Good customer handling.
+    expected_skills: [solar-inverter-maintenance, electrical-testing, customer-communication]
+    expected_role: solar-service-technician
+
+  # ---------------------------------------------------------------- spelling mistakes
+  - id: G14
+    categories: [spelling, multi]
+    language: en
+    title: Electrician
+    description: Domestic wirring and earthting work, knowlege of electrical saftey.
+    expected_skills: [electrical-wiring, earthing, electrical-safety]
+    expected_role: electrician
+  - id: G15
+    categories: [spelling]
+    language: en
+    title: EV Techncian
+    description: Experience in EV diagnostcs and battery managment.
+    expected_skills: [ev-diagnostics, battery-management]
+    expected_role: ev-service-technician
+  - id: G16
+    categories: [spelling]
+    language: en
+    title: Solar Panal Installer
+    description: Solar panel instalation on roofs.
+    expected_skills: [solar-pv-installation]
+    expected_role: solar-pv-installer
+  - id: G17
+    categories: [spelling]
+    language: en
+    title: Wireman
+    description: Cabel jointing and cabel termination work.
+    expected_skills: [cable-installation]
+    expected_role: wireman
+  - id: G18
+    categories: [spelling, multi]
+    language: en
+    title: Motor Rewinder
+    description: Motor rewindng and pump moter repair.
+    expected_skills: [motor-rewinding, motor-maintenance]
+    expected_role: motor-rewinder
+
+  # ---------------------------------------------------------------- same meaning, other words
+  - id: G19
+    categories: [semantic]
+    language: en
+    title: EV Service Technician
+    description: Find faults in electric scooters and three-wheelers using scan tools.
+    expected_skills: [ev-diagnostics]
+    expected_role: ev-service-technician
+  - id: G20
+    categories: [semantic]
+    language: en
+    title: Charging Station Installer
+    description: Mount and commission wall chargers for electric cars in apartment parking.
+    expected_skills: [ev-charging-systems]
+    expected_role: ev-charging-installer
+  - id: G21
+    categories: [semantic]
+    language: en
+    title: Solar Installer
+    description: Fix solar modules on metal structures on rooftops and connect the strings.
+    expected_skills: [solar-pv-installation]
+    expected_role: solar-pv-installer
+  - id: G22
+    categories: [semantic]
+    language: en
+    title: Electrician
+    description: Laying underground power cables and fixing cable ends in panels.
+    expected_skills: [cable-installation]
+    optional_skills: [panel-wiring]
+    expected_role: electrician
+  - id: G23
+    categories: [semantic]
+    language: en
+    title: Electrician
+    description: Test circuits with a multimeter and check insulation before handover.
+    expected_skills: [electrical-testing]
+    expected_role: electrician
+  - id: G24
+    categories: [semantic]
+    language: en
+    title: EV Service Technician
+    description: Handle lithium battery packs, check cell balancing and state of health.
+    expected_skills: [battery-management]
+    expected_role: ev-service-technician
+  - id: G25
+    categories: [semantic]
+    language: en
+    title: Solar Service Technician
+    description: Repair string inverters that show error codes at solar farms.
+    expected_skills: [solar-inverter-maintenance]
+    expected_role: solar-service-technician
+  - id: G26
+    categories: [semantic]
+    language: en
+    title: Wireman
+    description: Must wear a harness when working on ladders and roofs.
+    expected_skills: [work-at-height]
+    expected_role: wireman
+
+  # ---------------------------------------------------------------- many skills
+  - id: G27
+    categories: [multi]
+    language: en
+    title: Maintenance Electrician
+    description: Plant maintenance - control panel wiring, starter wiring, AC motor maintenance, earthing checks, megger testing and electrical safety practices.
+    expected_skills: [panel-wiring, motor-maintenance, earthing, electrical-testing, electrical-safety]
+    expected_role: electrician
+  - id: G28
+    categories: [multi, alias]
+    language: en
+    title: EV Workshop Technician
+    description: HV safety, EV troubleshooting, battery testing, EV motor controller repair and customer handling.
+    expected_skills: [hv-safety, ev-diagnostics, battery-management, ev-motor-controller, customer-communication]
+    expected_role: ev-service-technician
+
+  # ---------------------------------------------------------------- irrelevant ads
+  - id: G29
+    categories: [irrelevant]
+    language: en
+    title: Accountant
+    description: Accountant required for our office in Nashik. Tally and GST filing knowledge needed.
+    expected_skills: []
+    expected_role: null
+  - id: G30
+    categories: [irrelevant]
+    language: en
+    title: Delivery Executive
+    description: Two-wheeler delivery job in Pune, own bike and licence required. Incentives per order.
+    expected_skills: []
+    expected_role: null
+  - id: G31
+    categories: [irrelevant]
+    language: en
+    title: Security Guard
+    description: Night shift security guard for a warehouse near Chakan.
+    expected_skills: []
+    expected_role: null
+  - id: G32
+    categories: [irrelevant]
+    language: en
+    title: Receptionist
+    description: Front desk receptionist with good communication skills for a hotel.
+    expected_skills: [customer-communication]
+    expected_role: null
+    note: The ad really asks for communication skills, but it is not one of our roles.
+  - id: G33
+    categories: [irrelevant]
+    language: en
+    title: Data Entry Operator
+    description: Typing speed 30 wpm, MS Excel, walk-in interview on Monday.
+    expected_skills: []
+    expected_role: null
+
+  # ---------------------------------------------------------------- ambiguous ads
+  - id: G34
+    categories: [ambiguous]
+    language: en
+    title: Electrician / Wireman
+    description: Wiring work in new buildings.
+    expected_skills: [electrical-wiring]
+    expected_role: electrician
+    acceptable_roles: [wireman]
+  - id: G35
+    categories: [ambiguous]
+    language: en
+    title: Technician
+    description: Technician needed for solar and EV charger installation work.
+    expected_skills: [ev-charging-systems]
+    optional_skills: [solar-pv-installation]
+    expected_role: ev-charging-installer
+    acceptable_roles: [solar-pv-installer]
+  - id: G36
+    categories: [ambiguous]
+    language: en
+    title: Battery Technician
+    description: Battery testing and maintenance for inverters and e-rickshaws.
+    expected_skills: [battery-management]
+    optional_skills: [solar-inverter-maintenance]
+    expected_role: ev-service-technician
+    acceptable_roles: [solar-service-technician]
+  - id: G37
+    categories: [ambiguous]
+    language: en
+    title: Motor Mechanic
+    description: Repair of motors in agricultural pumps.
+    expected_skills: [motor-maintenance]
+    optional_skills: [motor-rewinding]
+    expected_role: motor-rewinder
+    acceptable_roles: [electrician]
+
+  # ---------------------------------------------------------------- Hindi
+  - id: G38
+    categories: [hindi]
+    language: hi
+    title: इलेक्ट्रीशियन
+    description: बिजली वायरिंग और विद्युत सुरक्षा का अनुभव जरूरी।
+    expected_skills: [electrical-wiring, electrical-safety]
+    expected_role: electrician
+  - id: G39
+    categories: [hindi]
+    language: hi
+    title: ईवी सर्विस तकनीशियन
+    description: ईवी खराबी जांच और बैटरी प्रबंधन आना चाहिए।
+    expected_skills: [ev-diagnostics, battery-management]
+    expected_role: ev-service-technician
+  - id: G40
+    categories: [hindi]
+    language: hi
+    title: सोलर पैनल इंस्टॉलर
+    description: छत पर सोलर पैनल लगाना और ऊंचाई पर काम सुरक्षा।
+    expected_skills: [solar-pv-installation, work-at-height]
+    expected_role: solar-pv-installer
+  - id: G41
+    categories: [hindi, semantic]
+    language: hi
+    title: वायरमैन
+    description: घर की वायरिंग का काम, 1-2 साल अनुभव।
+    expected_skills: [electrical-wiring]
+    expected_role: wireman
+    note: '"घर की वायरिंग" (house wiring) is not a Hindi alias in the vocabulary.'
+
+  # ---------------------------------------------------------------- Marathi
+  - id: G42
+    categories: [marathi, semantic]
+    language: mr
+    title: इलेक्ट्रिशियन पाहिजे
+    description: घरगुती वायरिंग आणि विद्युत सुरक्षा. अनुभव - 1-2 वर्षे.
+    expected_skills: [electrical-wiring, electrical-safety]
+    expected_role: electrician
+  - id: G43
+    categories: [marathi]
+    language: mr
+    title: ईव्ही सर्व्हिस टेक्निशियन
+    description: ईव्ही दोष निदान आणि बॅटरी व्यवस्थापन आवश्यक.
+    expected_skills: [ev-diagnostics, battery-management]
+    expected_role: ev-service-technician
+  - id: G44
+    categories: [marathi]
+    language: mr
+    title: सोलर पॅनल इन्स्टॉलर
+    description: सौर पॅनेल बसवणे आणि उंचीवर काम सुरक्षा.
+    expected_skills: [solar-pv-installation, work-at-height]
+    expected_role: solar-pv-installer
+  - id: G45
+    categories: [marathi]
+    language: mr
+    title: मोटर वाइंडर
+    description: मोटर वाइंडिंग आणि पंप दुरुस्ती.
+    expected_skills: [motor-rewinding]
+    optional_skills: [motor-maintenance]
+    expected_role: motor-rewinder
+
+  # ---------------------------------------------------------------- mixed language
+  - id: G46
+    categories: [hindi, mixed]
+    language: en
+    title: EV Technician
+    description: Hiring EV technician. बैटरी प्रबंधन and HV safety must.
+    expected_skills: [battery-management, hv-safety]
+    expected_role: ev-service-technician
+
+  # ---------------------------------------------------------------- skills we do not know
+  - id: G47
+    categories: [unknown]
+    language: en
+    title: Maintenance Technician
+    description: "Skills required: PLC programming, SCADA and VFD commissioning."
+    expected_skills: []
+    expected_role: null
+    note: None of these skills is in the demo vocabulary; they should go to review as NEW skills.
+  - id: G48
+    categories: [unknown, irrelevant]
+    language: en
+    title: Welder
+    description: Arc welding and gas cutting for a fabrication shop. Knowledge of AutoCAD preferred.
+    expected_skills: []
+    expected_role: null
+  - id: G49
+    categories: [unknown, alias]
+    language: en
+    title: Electrician
+    description: "Skills required: house wiring, DG set operation and transformer maintenance."
+    expected_skills: [electrical-wiring]
+    expected_role: electrician
+
+  # ---------------------------------------------------------------- no description
+  - id: G50
+    categories: [no_description]
+    language: en
+    title: EV Charging Technician
+    description: null
+    expected_skills: []
+    expected_role: ev-charging-installer
+  - id: G51
+    categories: [no_description]
+    language: en
+    title: Solar Panel Fitter
+    description: null
+    expected_skills: []
+    expected_role: solar-pv-installer
+  - id: G52
+    categories: [no_description]
+    language: en
+    title: Motor Rewinding Technician
+    description: null
+    expected_skills: []
+    optional_skills: [motor-rewinding]
+    expected_role: motor-rewinder

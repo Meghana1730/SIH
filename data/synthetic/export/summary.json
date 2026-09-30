@@ -1,0 +1,554 @@
+{
+  "is_synthetic": true,
+  "rows": {
+    "skill": 18,
+    "skill_alias": 72,
+    "job_role": 7,
+    "role_skill": 43,
+    "role_edge": 5,
+    "course": 5,
+    "course_module": 19,
+    "module_skill": 32,
+    "course_role": 7,
+    "equipment": 18,
+    "skill_equipment": 18,
+    "institute": 10,
+    "course_offering": 34,
+    "trainer": 34,
+    "trainer_skill": 214,
+    "institute_equipment": 92,
+    "employer": 16,
+    "sector_event": 2,
+    "consultation": 2,
+    "consultation_insight": 6,
+    "employer_survey_response": 96,
+    "job_posting": 2067,
+    "posting_role": 2067,
+    "posting_skill": 7886,
+    "candidate": 1656,
+    "candidate_skill": 9405,
+    "enrollment": 1656,
+    "placement_outcome": 1470,
+    "employer_rating": 91
+  },
+  "quarters": [
+    "2025Q2",
+    "2025Q3",
+    "2025Q4",
+    "2026Q1",
+    "2026Q2",
+    "2026Q3"
+  ],
+  "postings_by_district": {
+    "MH-PUNE": [
+      105,
+      109,
+      116,
+      126,
+      137,
+      150
+    ],
+    "MH-NASHIK": [
+      69,
+      73,
+      80,
+      88,
+      98,
+      110
+    ],
+    "MH-NAGPUR": [
+      80,
+      80,
+      82,
+      82,
+      83,
+      84
+    ],
+    "MH-KOLHAPUR": [
+      54,
+      53,
+      52,
+      53,
+      52,
+      51
+    ]
+  },
+  "checks": [
+    {
+      "id": "DATA-1",
+      "title": "Every synthetic record is marked is_synthetic = true",
+      "status": "PASS",
+      "details": [
+        "[ok] skill: 18 rows, 0 not marked synthetic",
+        "[ok] skill_alias: 72 rows, 0 not marked synthetic",
+        "[ok] job_role: 7 rows, 0 not marked synthetic",
+        "[ok] role_skill: 43 rows, 0 not marked synthetic",
+        "[ok] role_edge: 5 rows, 0 not marked synthetic",
+        "[ok] course: 5 rows, 0 not marked synthetic",
+        "[ok] course_module: 19 rows, 0 not marked synthetic",
+        "[ok] module_skill: 32 rows, 0 not marked synthetic",
+        "[ok] course_role: 7 rows, 0 not marked synthetic",
+        "[ok] equipment: 18 rows, 0 not marked synthetic",
+        "[ok] skill_equipment: 18 rows, 0 not marked synthetic",
+        "[ok] institute: 10 rows, 0 not marked synthetic",
+        "[ok] course_offering: 34 rows, 0 not marked synthetic",
+        "[ok] trainer: 34 rows, 0 not marked synthetic",
+        "[ok] trainer_skill: 214 rows, 0 not marked synthetic",
+        "[ok] institute_equipment: 92 rows, 0 not marked synthetic",
+        "[ok] employer: 16 rows, 0 not marked synthetic",
+        "[ok] sector_event: 2 rows, 0 not marked synthetic",
+        "[ok] consultation: 2 rows, 0 not marked synthetic",
+        "[ok] consultation_insight: 6 rows, 0 not marked synthetic",
+        "[ok] employer_survey_response: 96 rows, 0 not marked synthetic",
+        "[ok] job_posting: 2067 rows, 0 not marked synthetic",
+        "[ok] posting_role: 2067 rows, 0 not marked synthetic",
+        "[ok] posting_skill: 7886 rows, 0 not marked synthetic",
+        "[ok] candidate: 1656 rows, 0 not marked synthetic",
+        "[ok] candidate_skill: 9405 rows, 0 not marked synthetic",
+        "[ok] enrollment: 1656 rows, 0 not marked synthetic",
+        "[ok] placement_outcome: 1470 rows, 0 not marked synthetic",
+        "[ok] employer_rating: 91 rows, 0 not marked synthetic",
+        "[ok] sector/district rows are configuration data, not synthetic"
+      ],
+      "metrics": {
+        "synthetic_rows": 27048
+      }
+    },
+    {
+      "id": "DATA-2",
+      "title": "Every synthetic record carries provenance (source, seed, license)",
+      "status": "PASS",
+      "details": [
+        "[ok] skill: source Y13, 0 rows with missing provenance",
+        "[ok] skill_alias: source Y13, 0 rows with missing provenance",
+        "[ok] job_role: source Y13, 0 rows with missing provenance",
+        "[ok] role_skill: source Y13, 0 rows with missing provenance",
+        "[ok] role_edge: source Y13, 0 rows with missing provenance",
+        "[ok] course: source Y13, 0 rows with missing provenance",
+        "[ok] course_module: source Y13, 0 rows with missing provenance",
+        "[ok] module_skill: source Y13, 0 rows with missing provenance",
+        "[ok] course_role: source Y13, 0 rows with missing provenance",
+        "[ok] equipment: source Y12, 0 rows with missing provenance",
+        "[ok] skill_equipment: source Y13, 0 rows with missing provenance",
+        "[ok] institute: source Y14, 0 rows with missing provenance",
+        "[ok] course_offering: source Y05, 0 rows with missing provenance",
+        "[ok] trainer: source Y06, 0 rows with missing provenance",
+        "[ok] trainer_skill: source Y06, 0 rows with missing provenance",
+        "[ok] institute_equipment: source Y07, 0 rows with missing provenance",
+        "[ok] employer: source Y15, 0 rows with missing provenance",
+        "[ok] sector_event: source Y04, 0 rows with missing provenance",
+        "[ok] consultation: source Y03, 0 rows with missing provenance",
+        "[ok] consultation_insight: every row belongs to a synthetic consultation (0 do not)",
+        "[ok] consultation_insight: all rows are generator ground truth (extracted_by = GENERATED)",
+        "[ok] employer_survey_response: source Y02, 0 rows with missing provenance",
+        "[ok] job_posting: source Y01, 0 rows with missing provenance",
+        "[ok] posting_role: every row belongs to a synthetic job_posting (0 do not)",
+        "[ok] posting_role: all rows are generator ground truth (method = GENERATED)",
+        "[ok] posting_skill: every row belongs to a synthetic job_posting (0 do not)",
+        "[ok] posting_skill: all rows are generator ground truth (method = GENERATED)",
+        "[ok] candidate: source Y08, 0 rows with missing provenance",
+        "[ok] candidate_skill: source Y08, 0 rows with missing provenance",
+        "[ok] enrollment: source Y09, 0 rows with missing provenance",
+        "[ok] placement_outcome: source Y10, 0 rows with missing provenance",
+        "[ok] employer_rating: source Y11, 0 rows with missing provenance",
+        "[ok] one seed across the dataset: ['20260929']"
+      ],
+      "metrics": {
+        "seed": 20260929
+      }
+    },
+    {
+      "id": "DATA-3",
+      "title": "No invented official codes, no real names, simulated events labelled",
+      "status": "PASS",
+      "details": [
+        "[ok] job_role: no official codes set (0 rows have one)",
+        "[ok] course: no official codes set (0 rows have one)",
+        "[ok] institute: no official codes set (0 rows have one)",
+        "[ok] no NSQF levels invented",
+        "[ok] no courses linked to real QPs",
+        "[ok] every demo syllabus is labelled 'not official'",
+        "[ok] institute.name: all fictional 'Example ...' names []",
+        "[ok] employer.name: all fictional 'Example ...' names []",
+        "[ok] job_posting.employer_name_raw: all fictional 'Example ...' names []",
+        "[ok] 2 sector events: simulated, no citation, titled '(synthetic)'",
+        "[ok] consultations are labelled synthetic role-plays",
+        "[ok] equipment costs are marked estimates"
+      ],
+      "metrics": {}
+    },
+    {
+      "id": "DATA-4",
+      "title": "Volumes meet config/synthetic.yaml targets",
+      "status": "PASS",
+      "details": [
+        "[ok] job_posting: 2067 rows (target >= 2000)",
+        "[ok] employer_survey_response: 96 rows (target >= 80)",
+        "[ok] candidate: 1656 rows (target >= 600)",
+        "[ok] institute: 10 rows (target >= 10)",
+        "[ok] trainers per institute within 2-6: {'EX-ITI-A': 4, 'EX-ITI-B': 2, 'EX-ITI-D': 4, 'EX-ITI-F': 4, 'EX-ITI-G': 4, 'EX-ITI-J': 4, 'EX-ITI-K': 2, 'EX-TC-C': 2, 'EX-TC-E': 4, 'EX-TC-H': 4}",
+        "[ok] employers in MH-PUNE: 4 (target >= 2)",
+        "[ok] employers in MH-NASHIK: 6 (target >= 5)",
+        "[ok] employers in MH-NAGPUR: 3 (target >= 2)",
+        "[ok] employers in MH-KOLHAPUR: 3 (target >= 2)",
+        "[ok] postings in every history quarter: [308, 315, 330, 349, 370, 395]"
+      ],
+      "metrics": {
+        "job_posting": 2067,
+        "employer_survey_response": 96,
+        "candidate": 1656,
+        "institute": 10
+      }
+    },
+    {
+      "id": "DATA-5",
+      "title": "Values are plausible and consistent (no absurd numbers)",
+      "status": "PASS",
+      "details": [
+        "[ok] 3486 monthly salaries within Rs 8000-40000 (min 10000, max 26500)",
+        "[ok] salary_min <= salary_max on every posting",
+        "[ok] posting dates inside 2025Q2..2026-09-28 and matching their quarter",
+        "[ok] no duplicate postings (dedupe keys unique)",
+        "[ok] every posting has exactly one role and at least one skill",
+        "[ok] survey answers dated inside the history",
+        "[ok] seats within 10-200 and seats_filled <= seats",
+        "[ok] enrollments match seats_filled, and completers match completion_rate",
+        "[ok] one placement outcome per completer (1470)",
+        "[ok] placements dated after course completion and before the data cut-off",
+        "[ok] completion dates after enrollment dates",
+        "[ok] 91 employer ratings between 1 and 5",
+        "[ok] demo employers post no more ads than their survey headcount suggests []",
+        "[ok] no apprentices at employers that take none []"
+      ],
+      "metrics": {
+        "completion_rate_range": [
+          0.8333,
+          0.9333
+        ]
+      }
+    },
+    {
+      "id": "PP1",
+      "title": "EV demand and EV skills grow in Nashik and Pune; Nashik training does not supply them",
+      "status": "PASS",
+      "details": [
+        "[ok] MH-NASHIK EV-role postings rise every quarter: [9, 12, 17, 23, 31, 41]",
+        "[ok] MH-NASHIK ev-diagnostics mentions rise every quarter: [6, 8, 11, 15, 20, 27]",
+        "[ok] MH-NASHIK ev-diagnostics is EMERGING: window [11, 15, 20, 27], growth +81%, recent mentions 47, consecutive drops 0, decline n/a",
+        "[ok] MH-NASHIK battery-management mentions rise every quarter: [6, 8, 11, 15, 20, 27]",
+        "[ok] MH-NASHIK battery-management is EMERGING: window [11, 15, 20, 27], growth +81%, recent mentions 47, consecutive drops 0, decline n/a",
+        "[ok] MH-NASHIK ev-charging-systems mentions rise every quarter: [10, 12, 14, 17, 22, 26]",
+        "[ok] MH-NASHIK ev-charging-systems is EMERGING: window [14, 17, 22, 26], growth +55%, recent mentions 48, consecutive drops 0, decline n/a",
+        "[ok] MH-NASHIK solar-pv-installation is EMERGING: window [10, 12, 15, 18], growth +50%, recent mentions 33, consecutive drops 0, decline n/a",
+        "[ok] MH-PUNE EV-role postings rise every quarter: [16, 19, 24, 31, 39, 49]",
+        "[ok] MH-PUNE ev-diagnostics mentions rise every quarter: [10, 12, 15, 19, 24, 30]",
+        "[ok] MH-PUNE ev-diagnostics is EMERGING: window [15, 19, 24, 30], growth +59%, recent mentions 54, consecutive drops 0, decline n/a",
+        "[ok] MH-PUNE battery-management mentions rise every quarter: [10, 12, 15, 19, 24, 30]",
+        "[ok] MH-PUNE battery-management is EMERGING: window [15, 19, 24, 30], growth +59%, recent mentions 54, consecutive drops 0, decline n/a",
+        "[ok] MH-PUNE ev-charging-systems mentions rise every quarter: [17, 18, 21, 25, 30, 35]",
+        "[ok] MH-PUNE ev-charging-systems is EMERGING: window [21, 25, 30, 35], growth +41%, recent mentions 65, consecutive drops 0, decline n/a",
+        "[ok] MH-PUNE solar-pv-installation is EMERGING: window [16, 19, 22, 26], growth +37%, recent mentions 48, consecutive drops 0, decline n/a",
+        "[ok] no course offered in MH-NASHIK teaches an EV skill in any year []",
+        "[ok] MH-NASHIK ev-charging-installer supply/openings = 0.00 (primary mapping) -> UNDERSUPPLIED",
+        "[ok] MH-NASHIK ev-charging-installer supply/openings = 0.00 (any mapping) -> UNDERSUPPLIED",
+        "[ok] MH-NASHIK ev-service-technician supply/openings = 0.00 (primary mapping) -> UNDERSUPPLIED",
+        "[ok] MH-NASHIK ev-service-technician supply/openings = 0.32 (any mapping) -> UNDERSUPPLIED"
+      ],
+      "metrics": {
+        "MH-NASHIK.ev_postings": [
+          9,
+          12,
+          17,
+          23,
+          31,
+          41
+        ],
+        "MH-NASHIK.ev-diagnostics": [
+          6,
+          8,
+          11,
+          15,
+          20,
+          27
+        ],
+        "MH-NASHIK.battery-management": [
+          6,
+          8,
+          11,
+          15,
+          20,
+          27
+        ],
+        "MH-NASHIK.ev-charging-systems": [
+          10,
+          12,
+          14,
+          17,
+          22,
+          26
+        ],
+        "MH-PUNE.ev_postings": [
+          16,
+          19,
+          24,
+          31,
+          39,
+          49
+        ],
+        "MH-PUNE.ev-diagnostics": [
+          10,
+          12,
+          15,
+          19,
+          24,
+          30
+        ],
+        "MH-PUNE.battery-management": [
+          10,
+          12,
+          15,
+          19,
+          24,
+          30
+        ],
+        "MH-PUNE.ev-charging-systems": [
+          17,
+          18,
+          21,
+          25,
+          30,
+          35
+        ]
+      }
+    },
+    {
+      "id": "PP2",
+      "title": "demo-electrician at EX-ITI-A has poor EV skill coverage",
+      "status": "PASS",
+      "details": [
+        "[ok] EX-ITI-A is in MH-NASHIK",
+        "[ok] EX-ITI-A runs demo-electrician in 2025-26",
+        "[ok] modules: ['Electrical Wiring', 'Electrical Safety', 'Basic Motors', 'Motor Rewinding']",
+        "[ok] ev-diagnostics is not taught (coverage 0 -> ADD_MODULE candidate)",
+        "[ok] battery-management is not taught (coverage 0 -> ADD_MODULE candidate)",
+        "[ok] ev-charging-systems is not taught (coverage 0 -> ADD_MODULE candidate)",
+        "[ok] demo-electrician is mapped to ev-service-technician",
+        "[info] coverage for electrician: 0.62 (plain 0.64)",
+        "[info] coverage for ev-service-technician: 0.21 (plain 0.25)",
+        "[ok] course coverage over all mapped roles 0.39 (plain 0.45) < 0.5 -> OUTDATED",
+        "[ok] ev-service-technician coverage 0.21 < 0.5",
+        "[ok] ADD_MODULE ev-diagnostics: importance 1.0 >= 0.5, EMERGING in MH-NASHIK, untaught",
+        "[ok] ADD_MODULE battery-management: importance 0.9 >= 0.5, EMERGING in MH-NASHIK, untaught",
+        "[ok] ADD_MODULE ev-charging-systems: importance 0.5 >= 0.5, EMERGING in MH-NASHIK, untaught"
+      ],
+      "metrics": {
+        "coverage.electrician": 0.6154,
+        "coverage.ev-service-technician": 0.2143,
+        "course_coverage": 0.3851
+      }
+    },
+    {
+      "id": "PP3",
+      "title": "wireman is oversupplied in MH-KOLHAPUR, with weak placement",
+      "status": "PASS",
+      "details": [
+        "[ok] wireman postings never rise and end lower: [6, 5, 5, 4, 4, 3]",
+        "[ok] supply 119.0 / openings 53.3 = 2.23 > 1.5 (primary mapping) -> OVERSUPPLIED",
+        "[ok] supply 119.0 / openings 53.3 = 2.23 > 1.5 (any mapping) -> OVERSUPPLIED",
+        "[ok] 2024-25: trained output 123.0 stays above 1.5 x openings",
+        "[ok] 2025-26: trained output 119.0 stays above 1.5 x openings",
+        "[ok] MH-KOLHAPUR has wireman courses",
+        "[ok] EX-ITI-J demo-wireman: placed 42/139 = 0.30 < 0.4 -> LOW_PLACEMENT",
+        "[ok] EX-ITI-K demo-wireman: placed 30/103 = 0.29 < 0.4 -> LOW_PLACEMENT",
+        "[info] absorption into wireman: 62/242"
+      ],
+      "metrics": {
+        "postings": [
+          6,
+          5,
+          5,
+          4,
+          4,
+          3
+        ],
+        "ratio": 2.2312
+      }
+    },
+    {
+      "id": "PP4",
+      "title": "motor-rewinding demand declines over the last four quarters",
+      "status": "PASS",
+      "details": [
+        "[ok] statewide mentions Q1>Q2>Q3>Q4: [19, 15, 11, 7]",
+        "[ok] statewide DECLINING: window [19, 15, 11, 7], growth -47%, recent mentions 18, consecutive drops 3, decline 63%",
+        "[ok] MH-PUNE DECLINING: window [6, 5, 4, 3], growth -36%, recent mentions 7, consecutive drops 3, decline 50%",
+        "[ok] MH-NASHIK DECLINING: window [5, 4, 3, 2], growth -44%, recent mentions 5, consecutive drops 3, decline 60%",
+        "[ok] MH-NAGPUR DECLINING: window [4, 3, 2, 1], growth -57%, recent mentions 3, consecutive drops 3, decline 75%",
+        "[ok] MH-KOLHAPUR DECLINING: window [4, 3, 2, 1], growth -57%, recent mentions 3, consecutive drops 3, decline 75%",
+        "[ok] motor-rewinder postings Q1>Q2>Q3>Q4: [19, 15, 11, 7]",
+        "[ok] DEMOTE_MODULE candidates in demo-electrician: ['Motor Rewinding'] (>= 70% declining)"
+      ],
+      "metrics": {
+        "statewide": [
+          23,
+          23,
+          19,
+          15,
+          11,
+          7
+        ]
+      }
+    },
+    {
+      "id": "PP5",
+      "title": "The Nashik EV event lifts future EV demand",
+      "status": "PASS",
+      "details": [
+        "[ok] event 'nashik-ev-battery-unit' is in the dataset",
+        "[ok] event is in MH-NASHIK, sector EV",
+        "[ok] event is synthetic and simulated",
+        "[ok] uplift 360 jobs = 600 x 0.6",
+        "[ok] announced 2026Q2; jobs added in ['2026Q4', '2027Q1', '2027Q2', '2027Q3'] (+2..+5 quarters) across ['ev-charging-installer', 'ev-service-technician']",
+        "[ok] every lag quarter is inside the forecast horizon 2026Q4..2028Q1",
+        "[info] MH-NASHIK EV quarterly openings (postings / coverage factor) forecast for 2026Q4: straight line 148, with the event 238"
+      ],
+      "metrics": {
+        "uplift_by_quarter": {
+          "2026Q4": 90.0,
+          "2027Q1": 90.0,
+          "2027Q2": 90.0,
+          "2027Q3": 90.0
+        },
+        "forecast": {
+          "2026Q4": [
+            148.2,
+            238.2
+          ],
+          "2027Q1": [
+            169.5,
+            259.5
+          ],
+          "2027Q2": [
+            190.7,
+            280.7
+          ],
+          "2027Q3": [
+            211.9,
+            301.9
+          ],
+          "2027Q4": [
+            233.2,
+            233.2
+          ],
+          "2028Q1": [
+            254.4,
+            254.4
+          ]
+        }
+      }
+    },
+    {
+      "id": "PP6",
+      "title": "Institutes that teach EV skills place better; absorption is computable",
+      "status": "PASS",
+      "details": [
+        "[ok] placement: EV-teaching courses 0.78 vs others 0.52",
+        "[ok] EX-TC-E demo-ev-charging: 43/54 = 0.80",
+        "[ok] EX-TC-E demo-ev-technician: 60/72 = 0.83",
+        "[ok] EX-TC-H demo-ev-charging: 32/46 = 0.70",
+        "[ok] best-placing institute: EX-TC-E (0.82)",
+        "[ok] absorption computable for 14 role x district pairs in 4 districts",
+        "[info] absorption electrician in MH-KOLHAPUR: 27/61 = 0.44",
+        "[info] absorption electrician in MH-NAGPUR: 45/97 = 0.46",
+        "[info] absorption electrician in MH-NASHIK: 73/160 = 0.46",
+        "[info] absorption electrician in MH-PUNE: 87/170 = 0.51",
+        "[info] absorption ev-charging-installer in MH-NAGPUR: 27/46 = 0.59",
+        "[info] absorption ev-charging-installer in MH-PUNE: 37/54 = 0.69",
+        "[info] absorption ev-service-technician in MH-PUNE: 51/72 = 0.71",
+        "[info] absorption solar-pv-installer in MH-NAGPUR: 54/99 = 0.55",
+        "[info] absorption solar-pv-installer in MH-NASHIK: 54/97 = 0.56",
+        "[info] absorption solar-pv-installer in MH-PUNE: 54/94 = 0.57",
+        "[info] absorption wireman in MH-KOLHAPUR: 62/242 = 0.26",
+        "[info] absorption wireman in MH-NAGPUR: 39/93 = 0.42",
+        "[info] absorption wireman in MH-NASHIK: 35/89 = 0.39",
+        "[info] absorption wireman in MH-PUNE: 41/96 = 0.43",
+        "[ok] 6-month retention known for 452 placements"
+      ],
+      "metrics": {
+        "institute_placement_rates": {
+          "EX-ITI-A": 0.497,
+          "EX-ITI-B": 0.55,
+          "EX-ITI-D": 0.562,
+          "EX-ITI-F": 0.642,
+          "EX-ITI-G": 0.516,
+          "EX-ITI-J": 0.365,
+          "EX-ITI-K": 0.291,
+          "EX-TC-C": 0.649,
+          "EX-TC-E": 0.817,
+          "EX-TC-H": 0.662
+        },
+        "absorption": {
+          "electrician|MH-KOLHAPUR": 0.443,
+          "electrician|MH-NAGPUR": 0.464,
+          "electrician|MH-NASHIK": 0.456,
+          "electrician|MH-PUNE": 0.512,
+          "ev-charging-installer|MH-NAGPUR": 0.587,
+          "ev-charging-installer|MH-PUNE": 0.685,
+          "ev-service-technician|MH-PUNE": 0.708,
+          "solar-pv-installer|MH-NAGPUR": 0.545,
+          "solar-pv-installer|MH-NASHIK": 0.557,
+          "solar-pv-installer|MH-PUNE": 0.574,
+          "wireman|MH-KOLHAPUR": 0.256,
+          "wireman|MH-NAGPUR": 0.419,
+          "wireman|MH-NASHIK": 0.393,
+          "wireman|MH-PUNE": 0.427
+        }
+      }
+    },
+    {
+      "id": "PP7",
+      "title": "Employer surveys in Nashik and Pune ask for more EV skills over time",
+      "status": "PASS",
+      "details": [
+        "[ok] MH-NASHIK EV headcount asked for, per quarter: [8, 12, 18, 22, 28, 32]",
+        "[ok] MH-NASHIK answers naming EV skills: 50% -> 67%",
+        "[ok] MH-PUNE EV headcount asked for, per quarter: [7, 9, 14, 17, 22, 24]",
+        "[ok] MH-PUNE answers naming EV skills: 50% -> 75%"
+      ],
+      "metrics": {
+        "MH-NASHIK.EV.headcount": [
+          8,
+          12,
+          18,
+          22,
+          28,
+          32
+        ],
+        "MH-PUNE.EV.headcount": [
+          7,
+          9,
+          14,
+          17,
+          22,
+          24
+        ]
+      }
+    },
+    {
+      "id": "CTRL-1",
+      "title": "No unplanned trend muddles the story",
+      "status": "PASS",
+      "details": [
+        "[ok] statewide: DECLINING skills ['motor-rewinding']",
+        "[ok] MH-PUNE: DECLINING skills ['motor-rewinding']",
+        "[ok] MH-NASHIK: DECLINING skills ['motor-rewinding']",
+        "[ok] MH-NAGPUR: DECLINING skills ['motor-rewinding']",
+        "[ok] MH-KOLHAPUR: DECLINING skills ['motor-rewinding']",
+        "[ok] skills demo-electrician already teaches well ['earthing', 'electrical-safety', 'electrical-wiring', 'motor-maintenance'] are not EMERGING in MH-NASHIK",
+        "[info] EMERGING in MH-NASHIK: ['battery-management', 'ev-charging-systems', 'ev-diagnostics', 'ev-motor-controller', 'hv-safety', 'solar-pv-installation']"
+      ],
+      "metrics": {}
+    }
+  ],
+  "all_passed": true
+}

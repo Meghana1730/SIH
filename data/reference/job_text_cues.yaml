@@ -1,0 +1,82 @@
+# =============================================================================
+# Language cues for the job-posting pipeline (backend/app/nlp/job_extraction.py)
+# =============================================================================
+# Curated by the team (not an official resource). Matching uses normalised text: lower
+# case, punctuation removed, so write cues in plain words ("hands on", not "hands-on").
+# Add words when real ads show new patterns; re-run the evaluation afterwards:
+#   python -m app.cli.jobs evaluate
+# TODO-VERIFY: the Hindi and Marathi entries should be checked by native speakers.
+# =============================================================================
+
+# A clause is split into candidate skill phrases at these words
+# ("battery diagnostics and charging station experience" -> two phrases).
+connectors:
+  en: [and, with, or, including, plus, also, in, of, for, "on", at, like]
+  hi: [और, तथा, एवं, या, साथ]
+  mr: [आणि, व, तसेच, किंवा]
+
+# Words removed from the start and end of a candidate phrase before it is matched.
+filler:
+  en: [required, requirement, requirements, needed, need, needs, must, have, has, having, should,
+       good, strong, sound, excellent, knowledge, experience, experienced, skills, skill, work,
+       working, job, jobs, able, ability, to, the, a, an, is, are, be, will, candidate,
+       candidates, person, preferred, etc, urgent, urgently, hiring, wanted, opening, openings,
+       vacancy, years, year, yrs, minimum, min, least, our, we, you, your, any, all, apply,
+       immediate, joining, available, do, can, who, knows, know, understanding, done, related,
+       hands, practical, basic, fresher, freshers, apply, salary, month, per]
+  hi: [आवश्यक, आवश्यकता, जरूरी, चाहिए, अनुभव, ज्ञान, कौशल, काम, का, की, के, में, है, हैं,
+       अच्छा, अच्छी, होना, वाले, वाला, वर्ष, साल, वेतन, माह, प्रति]
+  mr: [आवश्यक, पाहिजे, हवा, हवे, अनुभव, ज्ञान, कौशल्य, कौशल्ये, काम, चे, ची, चा, मध्ये, आहे,
+       असावा, असणे, चांगले, वर्ष, वर्षे, पगार, दरमहा]
+
+# A leftover phrase counts as a possible NEW skill (sent to the review queue) only if its
+# sentence talks about skills, e.g. "Skills required: ..., PLC programming".
+skill_context:
+  en: [skills, skill, skills required, knowledge of, knowledge, experience in, experience of,
+       experience with, expertise in, familiar with, must know, should know, able to]
+  hi: [कौशल, ज्ञान, अनुभव]
+  mr: [कौशल्ये, कौशल्य, ज्ञान, अनुभव]
+
+# Requested proficiency, from words near the skill (same clause). This is what the ad ASKS
+# for, never a certified level.
+proficiency:
+  basic:
+    en: [basic, basics, basic knowledge, familiar with, familiarity with, exposure to,
+         awareness of, fresher, freshers, trainee, helper, beginner, entry level, assist,
+         assisting]
+    hi: [बुनियादी, प्रारंभिक, फ्रेशर, हेल्पर, सहायक]
+    mr: [मूलभूत, प्राथमिक, फ्रेशर, हेल्पर, सहाय्यक]
+  intermediate:
+    en: [hands on, working knowledge, experience in, experienced in, experience with,
+         practical experience, proficient in, proficiency in, independently, skilled in]
+    hi: [अनुभवी, व्यावहारिक, अनुभव]
+    mr: [अनुभवी, प्रत्यक्ष, अनुभव]
+  advanced:
+    en: [expert, expertise, advanced, senior, lead, leading, supervise, supervisor, in charge,
+         specialist]
+    hi: [विशेषज्ञ, वरिष्ठ, सुपरवाइजर, निपुण]
+    mr: [तज्ज्ञ, वरिष्ठ, सुपरवायझर, निपुण]
+
+# Required years of experience -> proficiency (used in the skill's clause first, then for
+# the whole ad). max <= basic_max -> basic; min >= advanced_min -> advanced; else intermediate.
+experience_years:
+  basic_max: 1
+  advanced_min: 5
+
+# Whole-ad words that set the level when a skill's own clause says nothing.
+posting_proficiency:
+  basic:
+    en: [fresher, freshers, trainee, entry level]
+    hi: [फ्रेशर]
+    mr: [फ्रेशर]
+  advanced:
+    en: [senior, supervisor, in charge]
+    hi: [वरिष्ठ, सुपरवाइजर]
+    mr: [वरिष्ठ, सुपरवायझर]
+
+# Telling Marathi from Hindi in Devanagari text (word counts; the letter ळ is typical of
+# Marathi).
+language_markers:
+  mr: [आणि, आहे, पाहिजे, साठी, मध्ये, किंवा, तसेच, कौशल्ये, वर्षे, असावा]
+  hi: [और, है, हैं, चाहिए, लिए, आवश्यकता, कौशल, साल, तथा]
+  mr_letters: [ळ]

@@ -1,0 +1,35 @@
+# KaushalSetu local services.
+#
+# For now this runs only the database. The backend and frontend run directly on
+# your machine (see README.md). Containers for api / worker / web will be added
+# later (docs/04-architecture.md, section 14.2).
+#
+# Values like ${POSTGRES_USER} come from the .env file next to this file.
+
+name: kaushalsetu
+
+services:
+  db:
+    # PostgreSQL 17 with the pgvector extension pre-installed. Pinned tag = reproducible.
+    image: pgvector/pgvector:0.8.1-pg17
+    container_name: kaushalsetu-db
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-kaushal}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD in .env (copy .env.example to .env)}
+      POSTGRES_DB: ${POSTGRES_DB:-kaushalsetu}
+    ports:
+      # Bound to 127.0.0.1 so the database is reachable only from this computer.
+      - "127.0.0.1:${POSTGRES_HOST_PORT:-5433}:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+    restart: unless-stopped
+
+volumes:
+  # Named volume: data survives `docker compose down`.
+  # `docker compose down -v` deletes it (fresh, empty database).
+  pgdata:

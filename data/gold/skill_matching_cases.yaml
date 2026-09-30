@@ -1,0 +1,148 @@
+# =============================================================================
+# Skill-matching evaluation set (hand-made, for testing the matcher only)
+# =============================================================================
+# `vocabulary` is a SMALL, SYNTHETIC skill list written by the team for this test. It is
+# not the real Skill Graph and not official NOS wording.
+# `cases` are phrases with the skill they SHOULD match (`expected: null` = should match
+# nothing). Categories: exact, alias, spelling, semantic, unrelated.
+# Used by:  pytest tests/test_skill_matching.py   and   python -m app.cli.eval_skill_matching
+# =============================================================================
+
+vocabulary:
+  - code: ev-diagnostics
+    name: EV Diagnostics
+    skill_type: TECHNICAL
+    aliases:
+      - {text: EV fault diagnosis, language: en}
+  - code: ev-battery-testing
+    name: EV Battery Testing
+    skill_type: TECHNICAL
+    aliases:
+      - {text: battery pack testing, language: en}
+  - code: ev-charger-installation
+    name: EV Charger Installation
+    skill_type: TECHNICAL
+    aliases:
+      - {text: EV charging station installation, language: en}
+      - {text: ईवी चार्जर लगाना, language: hi}
+  - code: hv-safety
+    name: High-Voltage Safety
+    skill_type: SAFETY
+    aliases:
+      - {text: HV safety, language: en}
+  - code: rooftop-solar-installation
+    name: Rooftop Solar PV Installation
+    skill_type: TECHNICAL
+    aliases:
+      - {text: solar panel installation, language: en}
+      - {text: सोलर पैनल लगाना, language: hi}
+      - {text: सोलर पॅनल बसवणे, language: mr}
+  - code: solar-inverter-maintenance
+    name: Solar Inverter Maintenance
+    skill_type: TECHNICAL
+    aliases: []
+  - code: domestic-wiring
+    name: Domestic Wiring
+    skill_type: TECHNICAL
+    aliases:
+      - {text: house wiring, language: en}
+  - code: industrial-motor-control
+    name: Industrial Motor Control
+    skill_type: TECHNICAL
+    aliases: []
+  - code: motor-rewinding
+    name: Motor Rewinding
+    skill_type: TECHNICAL
+    aliases:
+      - {text: armature rewinding, language: en}
+  - code: plc-programming
+    name: PLC Programming
+    skill_type: TECHNICAL
+    aliases:
+      - {text: programmable logic controller programming, language: en}
+  - code: earthing-protection
+    name: Earthing and Lightning Protection
+    skill_type: SAFETY
+    aliases:
+      - {text: grounding, language: en}
+  - code: multimeter-measurement
+    name: Multimeter Measurement
+    skill_type: TOOL
+    aliases: []
+  - code: electrical-safety
+    name: Electrical Safety Procedures
+    skill_type: SAFETY
+    aliases:
+      - {text: lockout tagout, language: en}
+  - code: customer-communication
+    name: Customer Communication
+    skill_type: CORE
+    aliases: []
+  - code: cable-jointing
+    name: Cable Jointing
+    skill_type: TECHNICAL
+    aliases: []
+  - code: transformer-maintenance
+    name: Transformer Maintenance
+    skill_type: TECHNICAL
+    aliases: []
+  - code: arc-welding
+    name: Arc Welding
+    skill_type: TECHNICAL
+    aliases: []
+
+cases:
+  # ---- exact: same as the canonical name after normalisation (case, spaces, punctuation)
+  - {input: "EV Diagnostics", expected: ev-diagnostics, category: exact}
+  - {input: "pLc programming", expected: plc-programming, category: exact}
+  - {input: "  Domestic   Wiring ", expected: domestic-wiring, category: exact}
+  - {input: "High Voltage Safety", expected: hv-safety, category: exact}
+  - {input: "Motor Rewinding.", expected: motor-rewinding, category: exact}
+
+  # ---- alias: a curated alternative name (English, Hindi, Marathi)
+  - {input: "HV safety", expected: hv-safety, category: alias}
+  - {input: "House Wiring", expected: domestic-wiring, category: alias}
+  - {input: "EV charging station installation", expected: ev-charger-installation, category: alias}
+  - {input: "सोलर पैनल लगाना", expected: rooftop-solar-installation, category: alias}
+  - {input: "lockout/tagout", expected: electrical-safety, category: alias}
+  - {input: "programmable logic controller programming", expected: plc-programming, category: alias}
+
+  # ---- spelling: typos and spelling variants
+  - {input: "EV diagnostcs", expected: ev-diagnostics, category: spelling}
+  - {input: "Domestic Wirring", expected: domestic-wiring, category: spelling}
+  - {input: "Multimetre Measurement", expected: multimeter-measurement, category: spelling}
+  - {input: "rooftop solar PV instalation", expected: rooftop-solar-installation, category: spelling}
+  - {input: "PLC programing", expected: plc-programming, category: spelling}
+  - {input: "high-voltage safty", expected: hv-safety, category: spelling}
+  - {input: "Motor rewindng", expected: motor-rewinding, category: spelling}
+  - {input: "Transformer Maintainance", expected: transformer-maintenance, category: spelling}
+
+  # ---- semantic: different words, same meaning (the hard part; not expected to be perfect)
+  - {input: "EV troubleshooting", expected: ev-diagnostics, category: semantic}
+  - {input: "electric vehicle diagnostics", expected: ev-diagnostics, category: semantic}
+  - {input: "EV diagnostic", expected: ev-diagnostics, category: semantic}
+  - {input: "diagnosing electric vehicle faults", expected: ev-diagnostics, category: semantic}
+  - {input: "installing EV chargers", expected: ev-charger-installation, category: semantic}
+  - {input: "mounting solar panels on roofs", expected: rooftop-solar-installation, category: semantic}
+  - {input: "testing lithium-ion battery packs", expected: ev-battery-testing, category: semantic}
+  - {input: "working safely with high voltage", expected: hv-safety, category: semantic}
+  - {input: "wiring of homes", expected: domestic-wiring, category: semantic}
+  - {input: "repairing solar inverters", expected: solar-inverter-maintenance, category: semantic}
+  - {input: "rewinding electric motors", expected: motor-rewinding, category: semantic}
+  - {input: "explaining faults to customers", expected: customer-communication, category: semantic}
+  # cross-language (Hindi / Marathi phrase, English skill name)
+  - {input: "इलेक्ट्रिक वाहन की खराबी जांचना", expected: ev-diagnostics, category: semantic}
+  - {input: "घर की वायरिंग", expected: domestic-wiring, category: semantic}
+  - {input: "सौर पॅनेल बसवणे", expected: rooftop-solar-installation, category: semantic}
+
+  # ---- unrelated: should match NOTHING (some are deliberately close, e.g. Java vs PLC programming)
+  - {input: "Accounting", expected: null, category: unrelated}
+  - {input: "Tally ERP bookkeeping", expected: null, category: unrelated}
+  - {input: "Cooking", expected: null, category: unrelated}
+  - {input: "Hairdressing", expected: null, category: unrelated}
+  - {input: "Java programming", expected: null, category: unrelated}
+  - {input: "Truck driving", expected: null, category: unrelated}
+  - {input: "Graphic design", expected: null, category: unrelated}
+  - {input: "Nursing care", expected: null, category: unrelated}
+  - {input: "Plumbing", expected: null, category: unrelated}
+  - {input: "Tailoring", expected: null, category: unrelated}
