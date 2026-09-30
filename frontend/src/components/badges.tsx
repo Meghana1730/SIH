@@ -117,7 +117,8 @@ export function TrendBadge({ trend }: { trend: TrendStatus | null | undefined })
 
 export function ConfidenceBadge({ confidence }: { confidence: Confidence | null | undefined }) {
   if (!confidence) return null
-  const tone: Tone = confidence === 'HIGH' ? 'success' : confidence === 'MEDIUM' ? 'info' : 'warning'
+  const tone: Tone =
+    confidence === 'HIGH' ? 'success' : confidence === 'MEDIUM' ? 'info' : 'warning'
   return (
     <Pill tone={tone} title="How much evidence is behind this number">
       {confidence.charAt(0) + confidence.slice(1).toLowerCase()} confidence
@@ -199,9 +200,19 @@ export function DataSourceBadge({
   )
 }
 
-export function EvidenceKindBadge({ kind }: { kind: 'OBSERVED' | 'INFERRED' | 'SYNTHETIC' | 'ASSUMPTION' }) {
+export function EvidenceKindBadge({
+  kind,
+}: {
+  kind: 'OBSERVED' | 'INFERRED' | 'SYNTHETIC' | 'ASSUMPTION'
+}) {
   const tone: Tone =
-    kind === 'OBSERVED' ? 'success' : kind === 'INFERRED' ? 'info' : kind === 'SYNTHETIC' ? 'demo' : 'neutral'
+    kind === 'OBSERVED'
+      ? 'success'
+      : kind === 'INFERRED'
+        ? 'info'
+        : kind === 'SYNTHETIC'
+          ? 'demo'
+          : 'neutral'
   return (
     <Pill tone={tone} className="h-5 text-[11px] uppercase tracking-wide">
       {kind.toLowerCase()}

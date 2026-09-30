@@ -17,10 +17,29 @@ function project(lon: number, lat: number): [number, number] {
 
 // Rough outline (lon, lat), simplified by hand.
 const OUTLINE: [number, number][] = [
-  [72.8, 20.2], [73.6, 21.1], [74.3, 21.8], [75.8, 21.5], [76.4, 21.3], [77.3, 21.7],
-  [78.4, 21.6], [79.3, 21.7], [80.4, 21.6], [80.8, 21.1], [80.5, 19.9], [79.9, 19.4],
-  [79.3, 18.9], [78.4, 19.5], [77.6, 18.4], [77.3, 17.6], [76.4, 17.4], [75.7, 16.7],
-  [74.5, 15.8], [73.7, 15.8], [73.3, 17.0], [73.0, 18.2], [72.8, 19.2],
+  [72.8, 20.2],
+  [73.6, 21.1],
+  [74.3, 21.8],
+  [75.8, 21.5],
+  [76.4, 21.3],
+  [77.3, 21.7],
+  [78.4, 21.6],
+  [79.3, 21.7],
+  [80.4, 21.6],
+  [80.8, 21.1],
+  [80.5, 19.9],
+  [79.9, 19.4],
+  [79.3, 18.9],
+  [78.4, 19.5],
+  [77.6, 18.4],
+  [77.3, 17.6],
+  [76.4, 17.4],
+  [75.7, 16.7],
+  [74.5, 15.8],
+  [73.7, 15.8],
+  [73.3, 17.0],
+  [73.0, 18.2],
+  [72.8, 19.2],
 ]
 
 const PLACES: Record<string, [number, number]> = {
@@ -43,11 +62,23 @@ export function MaharashtraMap({
   districts: Pick<DistrictMismatch, 'district' | 'mismatch_score' | 'status_counts'>[]
 }) {
   const navigate = useNavigate()
-  const path = OUTLINE.map(([lon, lat], i) => `${i ? 'L' : 'M'}${project(lon, lat).join(',')}`).join(' ') + 'Z'
+  const path =
+    OUTLINE.map(([lon, lat], i) => `${i ? 'L' : 'M'}${project(lon, lat).join(',')}`).join(' ') + 'Z'
   return (
     <figure className="relative">
-      <svg viewBox={`0 0 ${W} ${H}`} className="h-auto w-full" role="group" aria-label="Schematic map of the four demo districts in Maharashtra, coloured by skill mismatch">
-        <path d={path} fill="var(--accent)" stroke="var(--primary)" strokeOpacity={0.25} strokeWidth={1.5} />
+      <svg
+        viewBox={`0 0 ${W} ${H}`}
+        className="h-auto w-full"
+        role="group"
+        aria-label="Schematic map of the four demo districts in Maharashtra, coloured by skill mismatch"
+      >
+        <path
+          d={path}
+          fill="var(--accent)"
+          stroke="var(--primary)"
+          strokeOpacity={0.25}
+          strokeWidth={1.5}
+        />
         {districts.map((d) => {
           const place = PLACES[d.district.code]
           if (!place) return null
@@ -71,7 +102,15 @@ export function MaharashtraMap({
                 }
               }}
             >
-              <circle cx={x} cy={y} r={r + 6} fill={color} opacity={0.15} stroke="var(--ring)" strokeWidth={0} />
+              <circle
+                cx={x}
+                cy={y}
+                r={r + 6}
+                fill={color}
+                opacity={0.15}
+                stroke="var(--ring)"
+                strokeWidth={0}
+              />
               <circle cx={x} cy={y} r={r} fill={color} opacity={0.85} />
               <text x={x} y={y + 4} textAnchor="middle" fontSize={11} fontWeight={600} fill="white">
                 {fmtScore(d.mismatch_score)}
@@ -84,9 +123,15 @@ export function MaharashtraMap({
         })}
       </svg>
       <figcaption className="mt-2 flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-muted-foreground">
-        <span className="inline-flex items-center gap-1.5"><span className="size-2.5 rounded-full bg-danger" /> High mismatch (2.3 or more)</span>
-        <span className="inline-flex items-center gap-1.5"><span className="size-2.5 rounded-full bg-warning" /> Moderate (1.5 to 2.3)</span>
-        <span className="inline-flex items-center gap-1.5"><span className="size-2.5 rounded-full bg-success" /> Low</span>
+        <span className="inline-flex items-center gap-1.5">
+          <span className="size-2.5 rounded-full bg-danger" /> High mismatch (2.3 or more)
+        </span>
+        <span className="inline-flex items-center gap-1.5">
+          <span className="size-2.5 rounded-full bg-warning" /> Moderate (1.5 to 2.3)
+        </span>
+        <span className="inline-flex items-center gap-1.5">
+          <span className="size-2.5 rounded-full bg-success" /> Low
+        </span>
         <span className="ml-auto italic">Schematic, not to scale</span>
       </figcaption>
     </figure>

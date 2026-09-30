@@ -62,13 +62,23 @@ export function coursesTeaching(skill: string) {
       ...curriculum.modules.flatMap((m) => m.skills.filter(([c]) => c === skill).map(([, b]) => b)),
     )
     return band
-      ? [{ id: offering.id, name: curriculum.name, institute: offering.institute.name, district: offering.district, band }]
+      ? [
+          {
+            id: offering.id,
+            name: curriculum.name,
+            institute: offering.institute.name,
+            district: offering.district,
+            band,
+          },
+        ]
       : []
   })
 }
 
 export const skillsApi = {
-  list: async (filters: { district?: string; quarter?: string } = {}): Promise<Sourced<SkillRow[]>> => {
+  list: async (
+    filters: { district?: string; quarter?: string } = {},
+  ): Promise<Sourced<SkillRow[]>> => {
     const result = await analyticsApi.skillDemand(filters)
     return { ...result, data: groupSkills(result.data.items) }
   },

@@ -52,7 +52,9 @@ export function DemandChart({
   const summary = series
     .map((s) => {
       const values = data.map((d) => d[s.key]).filter((v): v is number => typeof v === 'number')
-      return values.length ? `${s.label}: ${values[0].toFixed(0)} to ${values[values.length - 1].toFixed(0)}` : ''
+      return values.length
+        ? `${s.label}: ${values[0].toFixed(0)} to ${values[values.length - 1].toFixed(0)}`
+        : ''
     })
     .filter(Boolean)
     .join('; ')
@@ -104,7 +106,13 @@ export function SupplyChart({
           <XAxis dataKey="name" tick={axis} tickLine={false} axisLine={false} interval={0} />
           <YAxis tick={axis} tickLine={false} axisLine={false} width={44} />
           <Tooltip contentStyle={tooltipStyle} formatter={(v) => [fmtInt(Number(v)), label]} />
-          <Bar dataKey="value" name={label} fill="var(--chart-2)" radius={[4, 4, 0, 0]} isAnimationActive={false} />
+          <Bar
+            dataKey="value"
+            name={label}
+            fill="var(--chart-2)"
+            radius={[4, 4, 0, 0]}
+            isAnimationActive={false}
+          />
         </BarChart>
       </ResponsiveContainer>
     </figure>
@@ -130,7 +138,12 @@ export function GapChart({
         .join('; ')}`}
     >
       <ResponsiveContainer width="100%" height={h}>
-        <BarChart data={data} layout="vertical" margin={{ top: 4, right: 16, bottom: 0, left: 8 }} barGap={2}>
+        <BarChart
+          data={data}
+          layout="vertical"
+          margin={{ top: 4, right: 16, bottom: 0, left: 8 }}
+          barGap={2}
+        >
           <CartesianGrid stroke="var(--border)" strokeDasharray="3 3" horizontal={false} />
           <XAxis type="number" tick={axis} tickLine={false} axisLine={false} />
           <YAxis
@@ -143,8 +156,22 @@ export function GapChart({
           />
           <Tooltip contentStyle={tooltipStyle} formatter={(v, name) => [fmtInt(Number(v)), name]} />
           <Legend wrapperStyle={{ fontSize: 12 }} iconType="circle" />
-          <Bar dataKey="openings" name="Est. openings / yr" fill="var(--chart-1)" radius={[0, 4, 4, 0]} barSize={12} isAnimationActive={false} />
-          <Bar dataKey="supply" name="Trained / yr" fill="var(--chart-3)" radius={[0, 4, 4, 0]} barSize={12} isAnimationActive={false} />
+          <Bar
+            dataKey="openings"
+            name="Est. openings / yr"
+            fill="var(--chart-1)"
+            radius={[0, 4, 4, 0]}
+            barSize={12}
+            isAnimationActive={false}
+          />
+          <Bar
+            dataKey="supply"
+            name="Trained / yr"
+            fill="var(--chart-3)"
+            radius={[0, 4, 4, 0]}
+            barSize={12}
+            isAnimationActive={false}
+          />
         </BarChart>
       </ResponsiveContainer>
     </figure>

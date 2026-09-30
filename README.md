@@ -1,12 +1,14 @@
-# KaushalSetu
+# InnovProcure
 
 Labour-market intelligence and curriculum-alignment platform (Smart India Hackathon prototype).
 It connects industry demand → skills → training supply → gaps → curriculum recommendations →
 employer validation → outcomes.
 
-> **Status: scaffold + database schema.** The backend, frontend and database run and are
-> connected, and the database schema (51 tables, `backend/app/models/`) is in place.
-> No product features are built yet. Planning docs are in [`docs/`](docs/).
+> **Status: working prototype on synthetic demo data.** The synthetic demo world, the job-posting
+> intelligence pipeline, the demand → supply → mismatch engine and the web app (dashboard,
+> districts, skills, course health, recommendations, employer portal, career guidance, district
+> plans) run end to end. **All data is synthetic demo data, not real or official statistics.**
+> Planning docs are in [`docs/`](docs/).
 
 ---
 
@@ -26,7 +28,8 @@ Docker Desktop must be **running** (whale icon in the taskbar) before you start 
 
 ## 2. First-time setup
 
-Run these in **PowerShell**, starting in the `kaushalsetu` folder.
+Run these in **PowerShell**, starting in the repository folder (the one that contains this
+README; after `git clone` it is called `SIH`).
 
 ### 2.1 Environment file
 ```powershell
@@ -100,6 +103,17 @@ cd ..
 API (admin): `POST /api/v1/ingestion/job-postings` and friends. How it works and how
 well: [docs/06-job-intelligence.md](docs/06-job-intelligence.md).
 
+**Demand → supply → mismatch** for all four districts (one command):
+```powershell
+cd backend
+python -m app.cli.analytics run         # compute and store (becomes the current run)
+python -m app.cli.analytics show --district MH-NASHIK --role ev-service-technician
+python -m app.cli.analytics validate    # the planted synthetic patterns are found
+cd ..
+```
+API: `GET /api/v1/analytics/demand|supply|mismatch`, `.../districts/{district}/mismatch`.
+Formulas and explanations: [docs/07-demand-supply-mismatch.md](docs/07-demand-supply-mismatch.md).
+
 ### 2.4 Frontend (React / Vite)
 ```powershell
 cd frontend
@@ -131,7 +145,8 @@ Open:
 
 | URL | What you see |
 |---|---|
-| http://localhost:5173 | The app: a **System status** page. All three rows should say **OK**. |
+| http://localhost:5173 | The app: sign in or click **Enter demo** (see the demo section below). |
+| http://localhost:5173/status | **System status** page. All three rows should say **OK**. |
 | http://127.0.0.1:8000/docs | Interactive API documentation (Swagger UI) |
 | http://127.0.0.1:8000/health | `{"status":"ok", ...}`: the API is running |
 | http://127.0.0.1:8000/health/db | `{"status":"ok","database":"connected","pgvector":{"installed":true,...}}` |
@@ -143,6 +158,31 @@ Invoke-RestMethod http://127.0.0.1:8000/health/db
 ```
 
 ---
+
+### Demo (frontend)
+
+1. Load the synthetic data and compute the analytics once (backend window, venv active):
+   ```powershell
+   python -m app.cli.synthetic load
+   python -m app.cli.analytics run
+   ```
+2. Create the demo accounts (one per role, all marked `is_demo`). Choose a password; it is read
+   from `DEMO_USER_PASSWORD` or asked twice, and never stored in code:
+   ```powershell
+   python -m app.cli.demo_users
+   ```
+3. Optional, so **Enter demo** signs in to the API by itself: create `frontend/.env.local`
+   (git-ignored, never commit it):
+   ```
+   VITE_DEMO_EMAIL=admin@kaushalsetu.example
+   VITE_DEMO_PASSWORD=<the password from step 2>
+   ```
+   Without it, **Enter demo** runs in offline demo mode with built-in demo data.
+4. `npm run dev` in `frontend`, open http://localhost:5173 and click **Enter demo**.
+
+Every screen marks where its numbers come from: **Live API** (+ **Synthetic**, because the database
+holds the synthetic demo world) or **Demo data** (the frontend's deterministic fallback for
+features the backend does not have yet). See [frontend/README.md](frontend/README.md).
 
 ### Accounts and login
 
@@ -199,17 +239,23 @@ never touched.
 ## 6. Repository layout
 
 ```
-kaushalsetu/
+SIH/  (repository root)
 ├── backend/            FastAPI app, Alembic migrations, pytest tests
 │   ├── app/
 │   │   ├── main.py     app entry point
-│   │   ├── core/       environment settings (.env), database connection
+│   │   ├── core/       environment settings (.env), database connection, security
 │   │   ├── config/     loads + validates the YAML files in config/
-│   │   ├── api/        HTTP routes (health, hello)
+│   │   ├── api/        HTTP routes (auth, admin, directory, ingestion, analytics, health)
 │   │   ├── schemas/    request/response models
-│   │   ├── models/     database tables (51), grouped by topic
-│   │   ├── services/ nlp/ engines/ llm/ bots/ pipelines/   (empty; built later)
-│   │   └── evidence.py (placeholder; built later)
+│   │   ├── models/     database tables (52), grouped by topic
+│   │   ├── services/   access rules, auth, audit log
+│   │   ├── synthetic/  synthetic demo-world generator, loader and checks
+│   │   ├── jobs/       job-posting ingestion, processing, evaluation
+│   │   ├── nlp/        skill extraction, skill and role matching
+│   │   ├── llm/        LLM client (mock by default) with guard rails
+│   │   ├── analytics/  demand → supply → mismatch engine
+│   │   ├── cli/        command-line tools (python -m app.cli.<name>)
+│   │   └── engines/ bots/ pipelines/ evidence.py   (placeholders; built later)
 │   ├── alembic/        database migrations
 │   └── tests/
 ├── frontend/           React + TypeScript + Vite + Tailwind + shadcn/ui, Playwright tests
@@ -252,5 +298,7 @@ kaushalsetu/
 | [docs/05-skill-matching.md](docs/05-skill-matching.md) | Skill matching: pipeline, model choice, measured results, limits |
 | [docs/SYNTHETIC_DATA_SPEC.md](docs/SYNTHETIC_DATA_SPEC.md) | The synthetic demo dataset: honesty rules, planted patterns, commands |
 | [docs/06-job-intelligence.md](docs/06-job-intelligence.md) | Job postings pipeline: ingestion, skill/role matching, evidence, LLM guard rails, evaluation |
+| [docs/07-demand-supply-mismatch.md](docs/07-demand-supply-mismatch.md) | Demand score, training supply, estimated openings and mismatch: formulas, API, explanations, results |
+| [docs/REVIEW_FINDINGS_JOB_PIPELINE.md](docs/REVIEW_FINDINGS_JOB_PIPELINE.md) | Verified code-review findings still open for the job pipeline and synthetic data |
 | [docs/DATA_SOURCE_INVENTORY.md](docs/DATA_SOURCE_INVENTORY.md) | Where data comes from |
 | [docs/DATA_COLLECTION_PLAN.md](docs/DATA_COLLECTION_PLAN.md) | Who collects what, and how |

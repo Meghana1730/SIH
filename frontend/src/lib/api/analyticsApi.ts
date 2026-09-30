@@ -232,6 +232,5 @@ export const analyticsApi = {
   quarters,
 
   /** Recompute demand, supply and mismatch (admin only). */
-  run: () =>
-    apiFetch<RunResult>('/api/v1/analytics/run', { method: 'POST' }),
+  run: () => apiFetch<RunResult>('/api/v1/analytics/run', { method: 'POST' }),
 }

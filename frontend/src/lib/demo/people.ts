@@ -9,15 +9,78 @@ const NGP = { code: 'MH-NAGPUR', name: 'Nagpur' }
 const KOP = { code: 'MH-KOLHAPUR', name: 'Kolhapur' }
 
 export const EMPLOYERS: Employer[] = [
-  { code: 'EX-EMP-NSK-01', name: 'Example EV Service Hub, Nashik', district: NSK, size: 'SMALL', sector: 'EV', is_synthetic: true },
-  { code: 'EX-EMP-NSK-03', name: 'Example Charge Point Services, Nashik', district: NSK, size: 'SMALL', sector: 'EV', is_synthetic: true },
-  { code: 'EX-EMP-NSK-02', name: 'Example Auto Components Unit, Nashik', district: NSK, size: 'MEDIUM', sector: 'ELECTRICAL', is_synthetic: true },
-  { code: 'EX-EMP-NSK-04', name: 'Example Electricals and Contractors, Nashik', district: NSK, size: 'SMALL', sector: 'ELECTRICAL', is_synthetic: true },
-  { code: 'EX-EMP-NSK-06', name: 'Example Solar Rooftops, Nashik', district: NSK, size: 'SMALL', sector: 'SOLAR_PV', is_synthetic: true },
-  { code: 'EX-EMP-PUN-01', name: 'Example EV Workshop, Pune', district: PUN, size: 'SMALL', sector: 'EV', is_synthetic: true },
-  { code: 'EX-EMP-PUN-02', name: 'Example Charging Networks, Pune', district: PUN, size: 'MEDIUM', sector: 'EV', is_synthetic: true },
-  { code: 'EX-EMP-NGP-02', name: 'Example Solar EPC, Nagpur', district: NGP, size: 'SMALL', sector: 'SOLAR_PV', is_synthetic: true },
-  { code: 'EX-EMP-KOP-01', name: 'Example Wiring Contractors, Kolhapur', district: KOP, size: 'SMALL', sector: 'ELECTRICAL', is_synthetic: true },
+  {
+    code: 'EX-EMP-NSK-01',
+    name: 'Example EV Service Hub, Nashik',
+    district: NSK,
+    size: 'SMALL',
+    sector: 'EV',
+    is_synthetic: true,
+  },
+  {
+    code: 'EX-EMP-NSK-03',
+    name: 'Example Charge Point Services, Nashik',
+    district: NSK,
+    size: 'SMALL',
+    sector: 'EV',
+    is_synthetic: true,
+  },
+  {
+    code: 'EX-EMP-NSK-02',
+    name: 'Example Auto Components Unit, Nashik',
+    district: NSK,
+    size: 'MEDIUM',
+    sector: 'ELECTRICAL',
+    is_synthetic: true,
+  },
+  {
+    code: 'EX-EMP-NSK-04',
+    name: 'Example Electricals and Contractors, Nashik',
+    district: NSK,
+    size: 'SMALL',
+    sector: 'ELECTRICAL',
+    is_synthetic: true,
+  },
+  {
+    code: 'EX-EMP-NSK-06',
+    name: 'Example Solar Rooftops, Nashik',
+    district: NSK,
+    size: 'SMALL',
+    sector: 'SOLAR_PV',
+    is_synthetic: true,
+  },
+  {
+    code: 'EX-EMP-PUN-01',
+    name: 'Example EV Workshop, Pune',
+    district: PUN,
+    size: 'SMALL',
+    sector: 'EV',
+    is_synthetic: true,
+  },
+  {
+    code: 'EX-EMP-PUN-02',
+    name: 'Example Charging Networks, Pune',
+    district: PUN,
+    size: 'MEDIUM',
+    sector: 'EV',
+    is_synthetic: true,
+  },
+  {
+    code: 'EX-EMP-NGP-02',
+    name: 'Example Solar EPC, Nagpur',
+    district: NGP,
+    size: 'SMALL',
+    sector: 'SOLAR_PV',
+    is_synthetic: true,
+  },
+  {
+    code: 'EX-EMP-KOP-01',
+    name: 'Example Wiring Contractors, Kolhapur',
+    district: KOP,
+    size: 'SMALL',
+    sector: 'ELECTRICAL',
+    is_synthetic: true,
+  },
 ]
 
 export const DEMO_EMPLOYER_CODE = 'EX-EMP-NSK-01'
@@ -33,7 +96,8 @@ export const NASHIK_PLAN: DistrictPlan = {
   priorities: [
     {
       title: 'Close the EV service gap',
-      detail: 'Add EV Diagnostics and Battery Management to the Electrician course at Example ITI A; start an EV short course at Example Skill Centre C.',
+      detail:
+        'Add EV Diagnostics and Battery Management to the Electrician course at Example ITI A; start an EV short course at Example Skill Centre C.',
       metric: 'EV Service Technician supply: 0 -> about 37 a year',
     },
     {
@@ -43,16 +107,52 @@ export const NASHIK_PLAN: DistrictPlan = {
     },
     {
       title: 'Retire declining content',
-      detail: 'Shorten Motor Rewinding (declining in every district) to make room for EV modules without lengthening the course.',
+      detail:
+        'Shorten Motor Rewinding (declining in every district) to make room for EV modules without lengthening the course.',
       metric: '40 course hours re-used',
     },
   ],
   actions: [
-    { id: 'act-1', title: 'Approve EV Diagnostics module for Electrician, Example ITI A', owner: 'Principal, Example ITI A', due: '2026-11-30', status: 'IN_PROGRESS', linked_recommendation: 'rec-nsk-ev-diagnostics' },
-    { id: 'act-2', title: 'Employer validation of the EV module content', owner: 'District Skill Committee', due: '2026-10-31', status: 'PLANNED', linked_recommendation: 'rec-nsk-ev-diagnostics' },
-    { id: 'act-3', title: 'Sign apprenticeship agreements with EV employers', owner: 'District Skill Committee', due: '2026-12-15', status: 'PLANNED', linked_recommendation: 'rec-nsk-employer-partnership' },
-    { id: 'act-4', title: 'Start EV Service Technician short course (40 seats)', owner: 'Example Skill Centre C', due: '2027-01-15', status: 'PLANNED', linked_recommendation: 'rec-nsk-start-ev-course' },
-    { id: 'act-5', title: 'Shorten Motor Rewinding module to 20 h', owner: 'Principal, Example ITI A', due: '2027-03-31', status: 'PLANNED', linked_recommendation: 'rec-nsk-motor-rewinding' },
+    {
+      id: 'act-1',
+      title: 'Approve EV Diagnostics module for Electrician, Example ITI A',
+      owner: 'Principal, Example ITI A',
+      due: '2026-11-30',
+      status: 'IN_PROGRESS',
+      linked_recommendation: 'rec-nsk-ev-diagnostics',
+    },
+    {
+      id: 'act-2',
+      title: 'Employer validation of the EV module content',
+      owner: 'District Skill Committee',
+      due: '2026-10-31',
+      status: 'PLANNED',
+      linked_recommendation: 'rec-nsk-ev-diagnostics',
+    },
+    {
+      id: 'act-3',
+      title: 'Sign apprenticeship agreements with EV employers',
+      owner: 'District Skill Committee',
+      due: '2026-12-15',
+      status: 'PLANNED',
+      linked_recommendation: 'rec-nsk-employer-partnership',
+    },
+    {
+      id: 'act-4',
+      title: 'Start EV Service Technician short course (40 seats)',
+      owner: 'Example Skill Centre C',
+      due: '2027-01-15',
+      status: 'PLANNED',
+      linked_recommendation: 'rec-nsk-start-ev-course',
+    },
+    {
+      id: 'act-5',
+      title: 'Shorten Motor Rewinding module to 20 h',
+      owner: 'Principal, Example ITI A',
+      due: '2027-03-31',
+      status: 'PLANNED',
+      linked_recommendation: 'rec-nsk-motor-rewinding',
+    },
   ],
   commitments: [
     { label: 'Courses re-tooled', value: '1' },

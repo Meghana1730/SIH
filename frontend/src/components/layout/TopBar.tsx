@@ -97,7 +97,12 @@ function Notifications() {
       : []),
     ...demo.activity.slice(0, 3).map((a) => ({
       id: a.id,
-      title: a.kind === 'PLEDGE' ? 'Apprenticeship pledge' : a.kind === 'VALIDATION' ? 'Employer validation' : 'Employer demand',
+      title:
+        a.kind === 'PLEDGE'
+          ? 'Apprenticeship pledge'
+          : a.kind === 'VALIDATION'
+            ? 'Employer validation'
+            : 'Employer demand',
       body: a.text,
       at: new Date(a.at).toLocaleDateString('en-IN'),
       href: '/employer',
@@ -108,9 +113,17 @@ function Notifications() {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="ghost" size="icon" className="relative" aria-label={`${t('topbar.notifications')} (${items.length})`}>
+        <Button
+          variant="ghost"
+          size="icon"
+          className="relative"
+          aria-label={`${t('topbar.notifications')} (${items.length})`}
+        >
           <Bell aria-hidden />
-          <span className="absolute top-1 right-1 grid h-4 min-w-4 place-items-center rounded-full bg-danger px-1 text-[10px] font-semibold text-white" aria-hidden>
+          <span
+            className="absolute top-1 right-1 grid h-4 min-w-4 place-items-center rounded-full bg-danger px-1 text-[10px] font-semibold text-white"
+            aria-hidden
+          >
             {items.length}
           </span>
         </Button>
@@ -118,15 +131,26 @@ function Notifications() {
       <DropdownMenuContent align="end" className="w-96">
         <DropdownMenuLabel className="flex items-center justify-between">
           {t('topbar.notifications')}
-          <Pill tone="demo" className="h-5 text-[10px]">Demo</Pill>
+          <Pill tone="demo" className="h-5 text-[10px]">
+            Demo
+          </Pill>
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
         {items.map((n) => (
-          <DropdownMenuItem key={n.id} className="items-start gap-3 py-2.5" onSelect={() => n.href && navigate(n.href)}>
-            <span className={cn('mt-1.5 size-2 shrink-0 rounded-full', TONE_DOT[n.tone])} aria-hidden />
+          <DropdownMenuItem
+            key={n.id}
+            className="items-start gap-3 py-2.5"
+            onSelect={() => n.href && navigate(n.href)}
+          >
+            <span
+              className={cn('mt-1.5 size-2 shrink-0 rounded-full', TONE_DOT[n.tone])}
+              aria-hidden
+            />
             <span className="min-w-0 space-y-0.5">
               <span className="block text-sm font-medium">{n.title}</span>
-              <span className="block text-xs whitespace-normal text-muted-foreground">{n.body}</span>
+              <span className="block text-xs whitespace-normal text-muted-foreground">
+                {n.body}
+              </span>
             </span>
           </DropdownMenuItem>
         ))}
@@ -161,7 +185,9 @@ function Profile() {
           </Avatar>
           <span className="hidden leading-tight xl:block">
             <span className="block max-w-40 truncate text-sm font-medium">{user.display_name}</span>
-            <span className="block text-[11px] text-muted-foreground">{ROLE_LABELS[user.role]}</span>
+            <span className="block text-[11px] text-muted-foreground">
+              {ROLE_LABELS[user.role]}
+            </span>
           </span>
         </button>
       </DropdownMenuTrigger>
@@ -171,9 +197,13 @@ function Profile() {
           <p className="truncate text-xs font-normal text-muted-foreground">{user.email}</p>
           <p className="mt-1.5">
             {mode === 'api' ? (
-              <Pill tone="info" className="h-5 text-[10px]">Signed in to the API</Pill>
+              <Pill tone="info" className="h-5 text-[10px]">
+                Signed in to the API
+              </Pill>
             ) : (
-              <Pill tone="demo" className="h-5 text-[10px]">Offline demo mode</Pill>
+              <Pill tone="demo" className="h-5 text-[10px]">
+                Offline demo mode
+              </Pill>
             )}
           </p>
         </DropdownMenuLabel>
@@ -181,7 +211,10 @@ function Profile() {
         <DropdownMenuLabel className="flex items-center gap-2 text-xs font-medium text-muted-foreground">
           <Globe className="size-3.5" aria-hidden /> {t('topbar.language')}
         </DropdownMenuLabel>
-        <DropdownMenuRadioGroup value={i18n.language} onValueChange={(value) => void i18n.changeLanguage(value)}>
+        <DropdownMenuRadioGroup
+          value={i18n.language}
+          onValueChange={(value) => void i18n.changeLanguage(value)}
+        >
           {LANGUAGES.map((language) => (
             <DropdownMenuRadioItem key={language.code} value={language.code}>
               {language.label}
@@ -240,7 +273,10 @@ export function TopBar({ title }: { title: string }) {
             label={t('topbar.sector')}
             value={filters.sector}
             onChange={(value) => filters.setSector(value as typeof filters.sector)}
-            options={[{ value: 'ALL', label: t('topbar.allSectors') }, ...SECTORS.map((s) => ({ value: s.code, label: s.label }))]}
+            options={[
+              { value: 'ALL', label: t('topbar.allSectors') },
+              ...SECTORS.map((s) => ({ value: s.code, label: s.label })),
+            ]}
           />
           <Selector
             id="global-district"

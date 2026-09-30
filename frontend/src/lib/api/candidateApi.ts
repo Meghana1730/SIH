@@ -9,10 +9,10 @@ import { CURRICULA, OFFERINGS, SKILL_NAMES } from '@/lib/demo/catalog'
 
 function trendOf(item: RoleDemand): TrendStatus {
   const postings = item.components.find((c) => c.name === 'postings')?.observed as
-    | { recent_postings?: number; earlier_postings?: number }
-    | undefined
+    { recent_postings?: number; earlier_postings?: number } | undefined
   if (!postings?.recent_postings || postings.earlier_postings === undefined) return 'STABLE'
-  const growth = (postings.recent_postings - postings.earlier_postings) / Math.max(1, postings.earlier_postings)
+  const growth =
+    (postings.recent_postings - postings.earlier_postings) / Math.max(1, postings.earlier_postings)
   if (growth >= 0.3) return 'GROWING'
   if (growth <= -0.2) return 'DECLINING'
   return 'STABLE'
@@ -23,11 +23,14 @@ function pathFor(item: RoleDemand): CareerPath {
   const skills = new Map<string, SkillRef>()
   for (const [, course] of courses) {
     for (const module of course.modules) {
-      for (const [code] of module.skills) skills.set(code, { code, name: SKILL_NAMES[code] ?? code })
+      for (const [code] of module.skills)
+        skills.set(code, { code, name: SKILL_NAMES[code] ?? code })
     }
   }
   const typical = courses.flatMap(([code, course]) => {
-    const local = OFFERINGS.filter((o) => o.course === code && o.district.code === item.district.code)
+    const local = OFFERINGS.filter(
+      (o) => o.course === code && o.district.code === item.district.code,
+    )
     const where = local.length ? local : OFFERINGS.filter((o) => o.course === code).slice(0, 1)
     const hours = course.modules.reduce((sum, m) => sum + m.hours, 0)
     return where.map((o) => ({
@@ -75,9 +78,14 @@ export const candidateApi = {
       return `${mentioned.role.title} in ${mentioned.district.name}: demand ${mentioned.demand_score.toFixed(0)}/100, about ${Math.round(mentioned.estimated_openings)} estimated openings a year (a model estimate, not an official figure). ${courses ? `Courses: ${courses}.` : 'No demo course trains for it here yet.'}`
     }
     if (q.includes('ev') || q.includes('electric vehicle')) {
-      const ev = paths.filter((p) => p.role.sector === 'EV')
+      const allEv = paths.filter((p) => p.role.sector === 'EV')
+      const growing = allEv.filter((p) => p.trend === 'GROWING')
+      const ev = q.includes('grow') && growing.length ? growing : allEv
+      if (q.includes('grow') && !growing.length && allEv.length) {
+        return `No EV role's job postings in ${top.district.name} are growing fast right now. EV roles here: ${allEv.map((p) => `${p.role.title} (${p.demand_score.toFixed(0)}/100)`).join(', ')}.`
+      }
       return ev.length
-        ? `EV roles in ${top.district.name}: ${ev.map((p) => `${p.role.title} (${p.demand_score.toFixed(0)}/100)`).join(', ')}. Key skills: ${ev[0].skills_to_learn.map((s) => s.name).join(', ')}.`
+        ? `${q.includes('grow') ? 'Growing EV roles' : 'EV roles'} in ${top.district.name}: ${ev.map((p) => `${p.role.title} (${p.demand_score.toFixed(0)}/100)`).join(', ')}. Key skills: ${ev[0].skills_to_learn.map((s) => s.name).join(', ')}.`
         : 'No EV roles have demand data here.'
     }
     if (q.includes('solar')) {

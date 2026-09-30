@@ -21,7 +21,13 @@ function log(kind: EmployerActivity['kind'], text: string) {
   updateDemoState((s) => ({
     ...s,
     activity: [
-      { id: `${kind}-${s.activity.length + 1}`, kind, text, at: stamp(), is_synthetic: true as const },
+      {
+        id: `${kind}-${s.activity.length + 1}`,
+        kind,
+        text,
+        at: stamp(),
+        is_synthetic: true as const,
+      },
       ...s.activity,
     ],
   }))

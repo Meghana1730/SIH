@@ -24,8 +24,20 @@ export type Snapshot = {
   district_mismatch: Record<string, Omit<DistrictMismatch, 'roles'>>
   supply_course: SupplyBreakdown[]
   supply_role: RoleSupply[]
-  role_history: { district: string; role: string; quarter: string; score: number; postings: number | null }[]
-  skill_history: { district: string; skill: string; quarter: string; score: number; mentions: number }[]
+  role_history: {
+    district: string
+    role: string
+    quarter: string
+    score: number
+    postings: number | null
+  }[]
+  skill_history: {
+    district: string
+    skill: string
+    quarter: string
+    score: number
+    mentions: number
+  }[]
 }
 
 let cached: Promise<Snapshot> | null = null

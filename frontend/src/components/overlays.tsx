@@ -57,7 +57,7 @@ export function Drawer({
   description,
   children,
   footer,
-  width = 'sm:max-w-xl',
+  width = 'data-[side=right]:sm:max-w-xl',
 }: {
   open: boolean
   onOpenChange: (open: boolean) => void
@@ -75,7 +75,9 @@ export function Drawer({
           {description && <SheetDescription>{description}</SheetDescription>}
         </SheetHeader>
         <div className="flex-1 overflow-y-auto px-6 py-5">{children}</div>
-        {footer && <div className="flex flex-wrap justify-end gap-2 border-t px-6 py-4">{footer}</div>}
+        {footer && (
+          <div className="flex flex-wrap justify-end gap-2 border-t px-6 py-4">{footer}</div>
+        )}
       </SheetContent>
     </Sheet>
   )

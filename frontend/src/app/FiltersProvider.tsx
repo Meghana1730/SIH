@@ -7,7 +7,12 @@ const KEY = 'kaushalsetu.filters'
 function initial(): GlobalFilters {
   try {
     const saved = JSON.parse(localStorage.getItem(KEY) ?? 'null') as GlobalFilters | null
-    if (saved) return { sector: saved.sector ?? 'ALL', district: saved.district ?? 'ALL', quarter: saved.quarter ?? null }
+    if (saved)
+      return {
+        sector: saved.sector ?? 'ALL',
+        district: saved.district ?? 'ALL',
+        quarter: saved.quarter ?? null,
+      }
   } catch {
     // Ignore unreadable or blocked storage.
   }

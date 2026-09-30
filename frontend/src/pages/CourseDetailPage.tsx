@@ -159,7 +159,7 @@ export default function CourseDetailPage() {
   const demandItem = [...(liveDemand.data?.data.items ?? [])]
     .filter((d) => d.district.code === c.district.code)
     .sort((a, b) => b.demand_score - a.demand_score)[0]
-  const gaps = c.curriculum.filter(isGap).length
+  const gaps = c.missing_skills.length
 
   return (
     <div className="space-y-6">

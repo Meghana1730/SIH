@@ -94,7 +94,7 @@ function Meta({ label, children }: { label: string; children: ReactNode }) {
   return (
     <div className="min-w-0">
       <dt className="text-xs text-muted-foreground">{label}</dt>
-      <dd className="truncate text-sm font-medium">{children}</dd>
+      <dd className="text-sm font-medium">{children}</dd>
     </div>
   )
 }
@@ -158,7 +158,7 @@ export function PlanDocument({
             <DataSourceBadge source={source} note={note} />
             <SyntheticBadge />
           </div>
-          <dl className="grid max-w-3xl grid-cols-2 gap-x-6 gap-y-3 pt-1 sm:grid-cols-4">
+          <dl className="flex max-w-3xl flex-wrap gap-x-8 gap-y-3 pt-1">
             <Meta label="District">{plan.district.name}</Meta>
             <Meta label="Period">{plan.period}</Meta>
             <Meta label="Prepared by">{plan.prepared_by}</Meta>

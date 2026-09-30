@@ -113,7 +113,7 @@ export default function CandidatePage() {
         badges={<SyntheticBadge />}
       />
 
-      <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_360px] 2xl:grid-cols-[minmax(0,1fr)_420px]">
+      <div className="grid items-start gap-6 lg:grid-cols-[minmax(0,1fr)_360px] 2xl:grid-cols-[minmax(0,1fr)_420px]">
         <section
           aria-label="Choose district and interest"
           className="animate-in-up flex flex-wrap items-end gap-x-8 gap-y-4 rounded-xl border bg-card p-5 shadow-xs"

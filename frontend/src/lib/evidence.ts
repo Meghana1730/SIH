@@ -2,7 +2,12 @@
 import type { Tone } from '@/components/badges'
 import type { EvidenceItem, Reason } from '@/lib/api/types'
 
-export type EvidenceLike = { title: string; detail: string; kind: EvidenceItem['kind']; source?: string }
+export type EvidenceLike = {
+  title: string
+  detail: string
+  kind: EvidenceItem['kind']
+  source?: string
+}
 
 export function reasonToEvidence(reason: Reason): EvidenceLike {
   return {
@@ -35,4 +40,3 @@ export function mismatchTone(score: number | null | undefined): Tone {
   if (score >= 1.5) return 'warning'
   return 'success'
 }
-

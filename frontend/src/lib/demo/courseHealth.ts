@@ -4,10 +4,10 @@
 //   * the district's skill demand (analytics API, or the demo snapshot offline)
 //   * the course's completions and placements (synthetic)
 //
-//   health = 0.35 x demand alignment      top-8 demanded skills taught (advanced/intermediate = 1,
-//                                         basic = 0.5)
-//          + 0.25 x emerging coverage     the district's EMERGING skills taught (same scoring;
-//                                         50 = neutral when the district has none)
+//   health = 0.35 x demand alignment      top-6 demanded skills of the course's related sectors
+//                                         taught (advanced/intermediate = 1, basic = 0.5)
+//          + 0.25 x emerging coverage     the district's EMERGING skills in those sectors taught
+//                                         (same scoring; 50 = neutral when there are none)
 //          + 0.25 x placement rate        placed / completed
 //          + 0.15 x curriculum freshness  share of hours NOT spent on DECLINING skills
 //   HEALTHY >= 70, WATCH 50-69, AT_RISK < 50. A demo heuristic, not an official rating.
@@ -19,7 +19,13 @@ import type {
   CurriculumSkill,
   SkillDemand,
 } from '@/lib/api/types'
-import { CURRICULA, OFFERINGS, SKILL_NAMES, type OfferingRecord } from '@/lib/demo/catalog'
+import {
+  CURRICULA,
+  OFFERINGS,
+  SKILL_NAMES,
+  skillSector,
+  type OfferingRecord,
+} from '@/lib/demo/catalog'
 import { RECOMMENDATIONS } from '@/lib/demo/recommendations'
 
 export const HEALTH_WEIGHTS = {
@@ -29,7 +35,7 @@ export const HEALTH_WEIGHTS = {
   freshness: 0.15,
 } as const
 
-const TOP_N = 8
+const TOP_N = 6
 
 export function healthStatus(score: number): CourseHealthStatus {
   if (score >= 70) return 'HEALTHY'
@@ -54,7 +60,9 @@ export function buildCourse(offering: OfferingRecord, districtSkills: SkillDeman
     }
   }
   const demand = new Map(districtSkills.map((s) => [s.skill.code, s]))
-  const ranked = [...districtSkills].sort((a, b) => b.demand_score - a.demand_score)
+  const ranked = districtSkills
+    .filter((s) => curriculum.related.includes(skillSector(s.skill.code)))
+    .sort((a, b) => b.demand_score - a.demand_score)
   const top = ranked.slice(0, TOP_N)
   const alignment = top.length
     ? (100 * top.reduce((sum, s) => sum + credit(bands.get(s.skill.code) ?? 0), 0)) / top.length
@@ -77,20 +85,20 @@ export function buildCourse(offering: OfferingRecord, districtSkills: SkillDeman
       name: 'Demand alignment',
       weight: HEALTH_WEIGHTS.alignment,
       value: alignment,
-      note: `${taughtTop} of the district's top ${top.length} demanded skills taught to intermediate or above`,
+      note: `${taughtTop} of the top ${top.length} demanded ${curriculum.related.map((r) => r.replace('_', ' ').toLowerCase()).join('/')} skills in ${offering.district.name} taught to intermediate or above`,
     },
     {
       name: 'Emerging-skill coverage',
       weight: HEALTH_WEIGHTS.emerging,
       value: emerging,
       note: emergingSkills.length
-        ? `${emergingSkills.length} emerging skills in ${offering.district.name}; covered: ${
+        ? `${emergingSkills.length} emerging related skills in ${offering.district.name}; covered: ${
             emergingSkills
               .filter((s) => (bands.get(s.skill.code) ?? 0) > 0)
               .map((s) => `${s.skill.name}${bands.get(s.skill.code) === 1 ? ' (basic only)' : ''}`)
               .join(', ') || 'none'
           }`
-        : 'no emerging skills in this district (neutral 50)',
+        : 'no emerging related skills in this district (neutral 50)',
     },
     {
       name: 'Placement rate',

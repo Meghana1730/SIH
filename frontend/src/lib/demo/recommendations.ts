@@ -15,25 +15,29 @@ const ANALYTICS = 'analytics API, demo run (synthetic data)'
 const NASHIK_EV_EVIDENCE: EvidenceItem[] = [
   {
     label: 'Job postings rising',
-    detail: 'EV Service Technician postings in Nashik rose from 26 to 48 (last 2 quarters vs the 2 before).',
+    detail:
+      'EV Service Technician postings in Nashik rose from 26 to 48 (last 2 quarters vs the 2 before).',
     kind: 'SYNTHETIC',
     source: ANALYTICS,
   },
   {
     label: 'Employers asking for more people',
-    detail: 'Surveyed Nashik employers asked for 20 EV Service Technicians, up from 14 two quarters earlier.',
+    detail:
+      'Surveyed Nashik employers asked for 20 EV Service Technicians, up from 14 two quarters earlier.',
     kind: 'SYNTHETIC',
     source: ANALYTICS,
   },
   {
     label: 'Industry event (simulated)',
-    detail: 'A simulated EV battery-pack assembly unit is expected to add about 180 EV Service Technician jobs in 2026Q4-2027Q3.',
+    detail:
+      'A simulated EV battery-pack assembly unit is expected to add about 180 EV Service Technician jobs in 2026Q4-2027Q3.',
     kind: 'SYNTHETIC',
     source: ANALYTICS,
   },
   {
     label: 'No local training supply',
-    detail: 'No Nashik course trains EV Service Technicians: supply 0 against about 247 estimated openings a year (ratio 0.00, UNDER_SUPPLIED).',
+    detail:
+      'No Nashik course trains EV Service Technicians: supply 0 against about 247 estimated openings a year (ratio 0.00, UNDER_SUPPLIED).',
     kind: 'SYNTHETIC',
     source: ANALYTICS,
   },
@@ -57,14 +61,16 @@ export const RECOMMENDATIONS: Recommendation[] = [
     evidence: [
       {
         label: 'Skill trend',
-        detail: 'EV Diagnostics mentions in Nashik job ads are EMERGING (demand score 89.3/100, 27 mentions in 2026Q3).',
+        detail:
+          'EV Diagnostics mentions in Nashik job ads are EMERGING (demand score 89.3/100, 27 mentions in 2026Q3).',
         kind: 'SYNTHETIC',
         source: ANALYTICS,
       },
       ...NASHIK_EV_EVIDENCE,
       {
         label: 'Curriculum gap',
-        detail: 'The course has no EV Diagnostics content; High-Voltage Safety is taught at basic level only.',
+        detail:
+          'The course has no EV Diagnostics content; High-Voltage Safety is taught at basic level only.',
         kind: 'OBSERVED',
         source: 'course curriculum (demo syllabus)',
       },
@@ -90,7 +96,8 @@ export const RECOMMENDATIONS: Recommendation[] = [
     evidence: [
       {
         label: 'Skill trend',
-        detail: 'Battery Management mentions in Nashik job ads are EMERGING (demand score 90.4/100).',
+        detail:
+          'Battery Management mentions in Nashik job ads are EMERGING (demand score 90.4/100).',
         kind: 'SYNTHETIC',
         source: ANALYTICS,
       },
@@ -113,12 +120,14 @@ export const RECOMMENDATIONS: Recommendation[] = [
     priority: 'HIGH',
     reason:
       'Nashik has the highest EV Service Technician demand in the four districts (94.5/100) and no EV course at all; Pune runs the same short course with an 84% placement rate.',
-    expected_impact: 'A 40-seat batch (240 h) would add about 37 trained people a year at Pune-like completion.',
+    expected_impact:
+      'A 40-seat batch (240 h) would add about 37 trained people a year at Pune-like completion.',
     evidence: [
       ...NASHIK_EV_EVIDENCE,
       {
         label: 'Comparable course',
-        detail: 'EV Service Technician (demo short course) at Example EV Skills Centre E, Pune: 31 of 37 completers placed.',
+        detail:
+          'EV Service Technician (demo short course) at Example EV Skills Centre E, Pune: 31 of 37 completers placed.',
         kind: 'SYNTHETIC',
         source: 'placement outcomes (synthetic)',
       },
@@ -140,11 +149,13 @@ export const RECOMMENDATIONS: Recommendation[] = [
     priority: 'HIGH',
     reason:
       'High-Voltage Safety is the most demanded skill in Nashik (91.5/100, EMERGING) but the Electrical Safety module only covers it at basic level.',
-    expected_impact: 'Low-cost change inside an existing 40 h module; prerequisite for any EV work.',
+    expected_impact:
+      'Low-cost change inside an existing 40 h module; prerequisite for any EV work.',
     evidence: [
       {
         label: 'Skill trend',
-        detail: 'High-Voltage Safety mentions in Nashik rose 13 -> 17 -> 23 -> 31 over four quarters (+80%): EMERGING.',
+        detail:
+          'High-Voltage Safety mentions in Nashik rose 13 -> 17 -> 23 -> 31 over four quarters (+80%): EMERGING.',
         kind: 'SYNTHETIC',
         source: ANALYTICS,
       },
@@ -172,7 +183,8 @@ export const RECOMMENDATIONS: Recommendation[] = [
     priority: 'HIGH',
     reason:
       'Two surveyed Nashik employers are asking for EV Service Technicians; on-the-job apprenticeships close the gap faster than a new course.',
-    expected_impact: 'Apprenticeship seats pledged by employers go straight into the Nashik district plan.',
+    expected_impact:
+      'Apprenticeship seats pledged by employers go straight into the Nashik district plan.',
     evidence: NASHIK_EV_EVIDENCE.slice(1, 3),
     confidence: 'MEDIUM',
     status: 'NEW',
@@ -191,11 +203,13 @@ export const RECOMMENDATIONS: Recommendation[] = [
     priority: 'MEDIUM',
     reason:
       'Kolhapur trains about 119 wiremen a year against about 57 estimated openings (ratio 2.10, OVER_SUPPLIED); only 20 of 68 recent completers here were placed.',
-    expected_impact: 'Frees about 20 seats a year for an under-supplied trade such as Solar PV installation.',
+    expected_impact:
+      'Frees about 20 seats a year for an under-supplied trade such as Solar PV installation.',
     evidence: [
       {
         label: 'Oversupply',
-        detail: 'Wireman supply 119/yr vs about 57 estimated openings a year in Kolhapur: ratio 2.10, OVER_SUPPLIED.',
+        detail:
+          'Wireman supply 119/yr vs about 57 estimated openings a year in Kolhapur: ratio 2.10, OVER_SUPPLIED.',
         kind: 'SYNTHETIC',
         source: ANALYTICS,
       },
@@ -207,7 +221,8 @@ export const RECOMMENDATIONS: Recommendation[] = [
       },
       {
         label: 'Openings estimate',
-        detail: 'Openings = postings in the last 4 quarters / coverage factor 0.3: a modelling assumption, not an official statistic.',
+        detail:
+          'Openings = postings in the last 4 quarters / coverage factor 0.3: a modelling assumption, not an official statistic.',
         kind: 'ASSUMPTION',
         source: 'config/scoring.yaml demand.openings',
       },
@@ -233,7 +248,8 @@ export const RECOMMENDATIONS: Recommendation[] = [
     evidence: [
       {
         label: 'Shortage',
-        detail: 'EV Charger Installation Technician in Pune: supply 28/yr vs about 187 openings a year (ratio 0.15).',
+        detail:
+          'EV Charger Installation Technician in Pune: supply 28/yr vs about 187 openings a year (ratio 0.15).',
         kind: 'SYNTHETIC',
         source: ANALYTICS,
       },
@@ -265,13 +281,15 @@ export const RECOMMENDATIONS: Recommendation[] = [
     evidence: [
       {
         label: 'Skill trend',
-        detail: 'Motor Rewinding mentions in Nashik job ads are DECLINING (demand score 23.1/100, 2 mentions in 2026Q3).',
+        detail:
+          'Motor Rewinding mentions in Nashik job ads are DECLINING (demand score 23.1/100, 2 mentions in 2026Q3).',
         kind: 'SYNTHETIC',
         source: ANALYTICS,
       },
       {
         label: 'Role demand',
-        detail: 'Motor Rewinding Technician demand is the lowest of all roles in every district (4.2-10.4/100).',
+        detail:
+          'Motor Rewinding Technician demand is the lowest of all roles in every district (4.2-10.4/100).',
         kind: 'SYNTHETIC',
         source: ANALYTICS,
       },
@@ -297,7 +315,8 @@ export const RECOMMENDATIONS: Recommendation[] = [
     evidence: [
       {
         label: 'No local supply',
-        detail: 'Solar PV Installer in Kolhapur: supply 0 vs about 110 estimated openings a year (UNDER_SUPPLIED).',
+        detail:
+          'Solar PV Installer in Kolhapur: supply 0 vs about 110 estimated openings a year (UNDER_SUPPLIED).',
         kind: 'SYNTHETIC',
         source: ANALYTICS,
       },
@@ -322,7 +341,8 @@ export const RECOMMENDATIONS: Recommendation[] = [
     evidence: [
       {
         label: 'Role demand',
-        detail: 'Motor Rewinding Technician demand in Nagpur: 4.2/100 (the lowest role in the district).',
+        detail:
+          'Motor Rewinding Technician demand in Nagpur: 4.2/100 (the lowest role in the district).',
         kind: 'SYNTHETIC',
         source: ANALYTICS,
       },

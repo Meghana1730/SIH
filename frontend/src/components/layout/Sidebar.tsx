@@ -11,8 +11,19 @@ export function Logo({ compact = false }: { compact?: boolean }) {
     <div className="flex items-center gap-2.5">
       <svg viewBox="0 0 32 32" className="size-8 shrink-0" aria-hidden>
         <rect width="32" height="32" rx="8" fill="oklch(0.55 0.17 270)" />
-        <path d="M6 21c4-8 16-8 20 0" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round" />
-        <path d="M9 21v-4M16 21v-7M23 21v-4" stroke="white" strokeWidth="2.5" strokeLinecap="round" />
+        <path
+          d="M6 21c4-8 16-8 20 0"
+          fill="none"
+          stroke="white"
+          strokeWidth="2.5"
+          strokeLinecap="round"
+        />
+        <path
+          d="M9 21v-4M16 21v-7M23 21v-4"
+          stroke="white"
+          strokeWidth="2.5"
+          strokeLinecap="round"
+        />
       </svg>
       {!compact && (
         <div className="leading-tight">
@@ -24,7 +35,15 @@ export function Logo({ compact = false }: { compact?: boolean }) {
   )
 }
 
-function Item({ item, badge, onNavigate }: { item: NavItem; badge?: number; onNavigate?: () => void }) {
+function Item({
+  item,
+  badge,
+  onNavigate,
+}: {
+  item: NavItem
+  badge?: number
+  onNavigate?: () => void
+}) {
   const { t } = useTranslation()
   const Icon = item.icon
   return (
@@ -56,7 +75,8 @@ export function SidebarNav({ onNavigate }: { onNavigate?: () => void }) {
   const { t } = useTranslation()
   const recommendations = useRecommendations()
   const newHigh =
-    recommendations.data?.data.filter((r) => r.status === 'NEW' && r.priority === 'HIGH').length ?? 0
+    recommendations.data?.data.filter((r) => r.status === 'NEW' && r.priority === 'HIGH').length ??
+    0
   return (
     <div className="flex h-full flex-col bg-sidebar text-sidebar-foreground">
       <div className="px-4 py-5">

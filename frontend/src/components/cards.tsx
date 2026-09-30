@@ -51,7 +51,9 @@ export function MetricCard({
       <div className="flex items-start justify-between gap-3">
         <p className="text-sm font-medium text-muted-foreground">{label}</p>
         {icon && (
-          <span className={cn('grid size-9 place-items-center rounded-lg [&_svg]:size-4.5', iconTone)}>
+          <span
+            className={cn('grid size-9 place-items-center rounded-lg [&_svg]:size-4.5', iconTone)}
+          >
             {icon}
           </span>
         )}
@@ -141,7 +143,10 @@ export function SkillGapCard({
         </div>
       </div>
       <div className="mt-3 h-1.5 overflow-hidden rounded-full bg-muted" aria-hidden>
-        <div className="h-full rounded-full bg-primary" style={{ width: `${Math.min(100, demandScore)}%` }} />
+        <div
+          className="h-full rounded-full bg-primary"
+          style={{ width: `${Math.min(100, demandScore)}%` }}
+        />
       </div>
     </>
   )
@@ -157,14 +162,35 @@ export function SkillGapCard({
 }
 
 // ---------------------------------------------------------------- ScoreRing / CourseHealthCard
-export function ScoreRing({ score, size = 96, label }: { score: number; size?: number; label?: string }) {
+export function ScoreRing({
+  score,
+  size = 96,
+  label,
+}: {
+  score: number
+  size?: number
+  label?: string
+}) {
   const tone = score >= 70 ? 'var(--success)' : score >= 50 ? 'var(--warning)' : 'var(--danger)'
   const radius = (size - 10) / 2
   const circumference = 2 * Math.PI * radius
   return (
     <div className="relative shrink-0" style={{ width: size, height: size }}>
-      <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`} role="img" aria-label={`${label ?? 'Score'} ${score} out of 100`}>
-        <circle cx={size / 2} cy={size / 2} r={radius} fill="none" stroke="var(--muted)" strokeWidth={8} />
+      <svg
+        width={size}
+        height={size}
+        viewBox={`0 0 ${size} ${size}`}
+        role="img"
+        aria-label={`${label ?? 'Score'} ${score} out of 100`}
+      >
+        <circle
+          cx={size / 2}
+          cy={size / 2}
+          r={radius}
+          fill="none"
+          stroke="var(--muted)"
+          strokeWidth={8}
+        />
         <circle
           cx={size / 2}
           cy={size / 2}
@@ -179,7 +205,10 @@ export function ScoreRing({ score, size = 96, label }: { score: number; size?: n
       </svg>
       <div className="absolute inset-0 grid place-items-center text-center">
         <div>
-          <span className="tabular block text-2xl leading-none font-semibold" style={{ fontSize: size / 4 }}>
+          <span
+            className="tabular block text-2xl leading-none font-semibold"
+            style={{ fontSize: size / 4 }}
+          >
             {score}
           </span>
           <span className="text-[10px] text-muted-foreground">/ 100</span>
@@ -208,7 +237,11 @@ export function CourseHealthCard({ course }: { course: Course }) {
         </p>
         {course.missing_skills.length > 0 && (
           <p className="truncate text-xs text-danger">
-            Missing: {course.missing_skills.slice(0, 3).map((m) => m.skill.name).join(', ')}
+            Missing:{' '}
+            {course.missing_skills
+              .slice(0, 3)
+              .map((m) => m.skill.name)
+              .join(', ')}
             {course.missing_skills.length > 3 ? ` +${course.missing_skills.length - 3}` : ''}
           </p>
         )}
@@ -273,8 +306,8 @@ export function RecommendationCard({
       <div className="mt-3 flex flex-wrap items-center justify-between gap-2">
         <p className="flex items-center gap-1 text-xs text-muted-foreground">
           <CheckCircle2 className="size-3.5 text-success" aria-hidden />
-          {rec.employer_validations} employer validation{rec.employer_validations === 1 ? '' : 's'} ·{' '}
-          {rec.evidence.length} evidence items
+          {rec.employer_validations} employer validation{rec.employer_validations === 1 ? '' : 's'}{' '}
+          · {rec.evidence.length} evidence items
         </p>
         <div className="flex items-center gap-2">
           {actions}
@@ -335,7 +368,11 @@ export function DistrictCard({
         </p>
       )}
       <span className="mt-auto inline-flex items-center gap-1 text-sm font-medium text-primary">
-        Open district <ArrowRight className="size-3.5 transition-transform group-hover:translate-x-0.5" aria-hidden />
+        Open district{' '}
+        <ArrowRight
+          className="size-3.5 transition-transform group-hover:translate-x-0.5"
+          aria-hidden
+        />
       </span>
     </Link>
   )
@@ -369,7 +406,9 @@ export function Callout({
   }[tone]
   return (
     <div className={cn('flex gap-3 rounded-lg border px-4 py-3 text-sm', styles)}>
-      <span className={cn('mt-0.5 shrink-0 [&_svg]:size-4', iconColor)}>{icon ?? <Info aria-hidden />}</span>
+      <span className={cn('mt-0.5 shrink-0 [&_svg]:size-4', iconColor)}>
+        {icon ?? <Info aria-hidden />}
+      </span>
       <div className="min-w-0 space-y-0.5">
         {title && <p className="font-medium text-foreground">{title}</p>}
         <div className="text-muted-foreground">{children}</div>

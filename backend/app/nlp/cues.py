@@ -28,6 +28,15 @@ _YEARS = re.compile(
     r"(?:years?|yrs?|वर्षे|वर्ष|साल)(?![A-Za-z])",
     re.IGNORECASE,
 )
+# A years expression only counts as experience when an experience word is near it, and not
+# when it is an age limit, a bond, or the company's age ("Age 18-35 years", "2 years bond",
+# "a 25 years old company").
+_EXPERIENCE_WORD = re.compile(r"experience|experienced|\bexp\b|अनुभव", re.IGNORECASE)
+_NOT_EXPERIENCE_BEFORE = re.compile(
+    r"\bage\b|\baged\b|उम्र|उमर|वय|\bbond\b|since|established|warranty|guarantee",
+    re.IGNORECASE,
+)
+_NOT_EXPERIENCE_AFTER = re.compile(r"\s*(?:old|bond|of age|age)\b", re.IGNORECASE)
 _DEVANAGARI = re.compile(r"[ऀ-ॿ]")
 LEVEL_ORDER = (Proficiency.BASIC, Proficiency.INTERMEDIATE, Proficiency.ADVANCED)
 
@@ -147,8 +156,22 @@ class Cues:
         return Language.MR if mr > hi else Language.HI
 
 
+def _experience_years(text: str) -> re.Match[str] | None:
+    """The first years expression in the text that is about work experience."""
+    text = text or ""
+    previous_end = 0
+    for match in _YEARS.finditer(text):
+        before = text[max(previous_end, match.start() - 25) : match.start()]
+        previous_end = match.end()
+        if _NOT_EXPERIENCE_BEFORE.search(before) or _NOT_EXPERIENCE_AFTER.match(text, match.end()):
+            continue
+        if _EXPERIENCE_WORD.search(text[max(0, match.start() - 40) : match.end() + 30]):
+            return match
+    return None
+
+
 def first_years(text: str) -> tuple[float, float | None] | None:
-    match = _YEARS.search(text or "")
+    match = _experience_years(text)
     if match is None:
         return None
     low = float(match.group(1))
@@ -157,7 +180,7 @@ def first_years(text: str) -> tuple[float, float | None] | None:
 
 
 def years_text(text: str) -> str | None:
-    match = _YEARS.search(text or "")
+    match = _experience_years(text)
     return match.group(0).strip() if match else None
 
 

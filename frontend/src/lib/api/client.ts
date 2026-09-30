@@ -93,7 +93,8 @@ export type Sourced<T> = {
   note?: string
 }
 
-export const NOT_BUILT = 'This feature has no backend endpoint yet: showing deterministic demo data.'
+export const NOT_BUILT =
+  'This feature has no backend endpoint yet: showing deterministic demo data.'
 
 /**
  * Try the real API; if it fails (API down, not logged in, endpoint missing) and demo fallback is

@@ -5,6 +5,7 @@ import { withFallback, type Sourced } from '@/lib/api/client'
 import type { DistrictPlan } from '@/lib/api/types'
 import { OFFERINGS } from '@/lib/demo/catalog'
 import { NASHIK_PLAN } from '@/lib/demo/people'
+import { RECOMMENDATIONS } from '@/lib/demo/recommendations'
 import { getDemoState, updateDemoState } from '@/lib/demo/store'
 
 function current(): DistrictPlan[] {
@@ -13,7 +14,10 @@ function current(): DistrictPlan[] {
     OFFERINGS.some((o) => o.id === p.course_id && o.district.code === 'MH-NASHIK'),
   )
   const seats = nashikPledges.reduce((sum, p) => sum + p.seats, 0)
-  const validated = Object.values(state.validations).filter((v) => v.agree).length
+  const validated = Object.entries(state.validations).filter(
+    ([id, v]) =>
+      v.agree && RECOMMENDATIONS.some((r) => r.id === id && r.district.code === 'MH-NASHIK'),
+  ).length
   const plan: DistrictPlan = {
     ...NASHIK_PLAN,
     status: state.planSubmitted ? 'IN_REVIEW' : NASHIK_PLAN.status,
@@ -21,7 +25,11 @@ function current(): DistrictPlan[] {
       ...a,
       status:
         state.planActionStatus[a.id] ??
-        (a.id === 'act-2' && validated ? 'DONE' : a.id === 'act-3' && seats ? 'IN_PROGRESS' : a.status),
+        (a.id === 'act-2' && validated
+          ? 'DONE'
+          : a.id === 'act-3' && seats
+            ? 'IN_PROGRESS'
+            : a.status),
     })),
     commitments: [
       ...NASHIK_PLAN.commitments,
@@ -39,7 +47,10 @@ export const plansApi = {
     return { ...all, data: all.data.find((p) => p.district.code === district) ?? null }
   },
   setActionStatus: async (actionId: string, status: 'PLANNED' | 'IN_PROGRESS' | 'DONE') => {
-    updateDemoState((s) => ({ ...s, planActionStatus: { ...s.planActionStatus, [actionId]: status } }))
+    updateDemoState((s) => ({
+      ...s,
+      planActionStatus: { ...s.planActionStatus, [actionId]: status },
+    }))
   },
   submit: async () => {
     updateDemoState((s) => ({ ...s, planSubmitted: true }))

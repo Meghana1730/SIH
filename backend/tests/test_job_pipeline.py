@@ -29,7 +29,7 @@ from app.jobs.processing import (
 from app.llm import LlmCallError, MockLLMClient
 from app.models import AppUser, JobPosting, PostingRole, PostingSkill, ReviewItem
 from app.models.enums import EvidenceKind, ExtractionMethod, Language, MatchDecision, Proficiency
-from app.nlp.cues import load_cues
+from app.nlp.cues import first_years, load_cues
 from app.nlp.skill_embeddings import embed_vocabulary
 from app.nlp.tokens import analyze_text
 from app.synthetic.export import read_export
@@ -598,3 +598,20 @@ def test_llm_disabled_config_still_runs(vocab, config, fake):
     )
     intel = JobIntelligence.create(vocab, off)
     assert intel.llm is None
+
+
+@pytest.mark.parametrize(
+    ("text", "expected"),
+    [
+        ("Age 18-35 years. Solar panel installation.", None),
+        ("उम्र 18-35 साल", None),
+        ("We are a 25 years old company. House wiring work.", None),
+        ("Salary 15000 per month, 2 years bond.", None),
+        ("Age 18-35 years, 2 years experience in wiring", (2.0, None)),
+        ("Need electrician. 2-4 years experience.", (2.0, 4.0)),
+        ("अनुभव - 1-2 वर्षे", (1.0, 2.0)),
+    ],
+)
+def test_only_experience_years_count_as_experience(text, expected):
+    """Age limits, bonds and company age are not years of experience (review finding)."""
+    assert first_years(text) == expected
