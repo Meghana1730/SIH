@@ -1,0 +1,8 @@
+# Never upload local secrets or local builds to Vercel (it builds from git).
+.env
+.env.*
+!.env.example
+dist
+node_modules
+playwright-report
+test-results

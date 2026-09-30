@@ -46,21 +46,29 @@ type FetchOptions = {
   auth?: boolean
 }
 
+// Give up after this long, so pages fall back to demo data instead of waiting on a free-tier
+// backend that is still waking up.
+const REQUEST_TIMEOUT_MS = 20_000
+
 export async function apiFetch<T>(path: string, options: FetchOptions = {}): Promise<T> {
   const { method = 'GET', body, signal, auth = true } = options
   const headers: Record<string, string> = { Accept: 'application/json' }
   if (body !== undefined) headers['Content-Type'] = 'application/json'
   const token = auth ? getToken() : null
   if (token) headers.Authorization = `Bearer ${token}`
+  const timeout = AbortSignal.timeout(REQUEST_TIMEOUT_MS)
   let response: Response
   try {
     response = await fetch(path.startsWith('/') ? path : `${API_BASE}/${path}`, {
       method,
       headers,
-      signal,
+      signal: signal ? AbortSignal.any([signal, timeout]) : timeout,
       body: body === undefined ? undefined : JSON.stringify(body),
     })
   } catch (error) {
+    if (timeout.aborted) {
+      throw new ApiError(0, 'The API did not answer in time (it may be waking up).', 'TIMEOUT')
+    }
     if (error instanceof DOMException && error.name === 'AbortError') throw error
     throw new ApiError(0, 'The KaushalSetu API is not reachable.', 'NETWORK')
   }
@@ -79,6 +87,10 @@ export async function apiFetch<T>(path: string, options: FetchOptions = {}): Pro
       // Not JSON: keep the generic message.
     }
     throw new ApiError(response.status, message, code)
+  }
+  // A static host without a backend answers /api/... with the app's own index.html.
+  if (!(response.headers.get('content-type') ?? '').includes('json')) {
+    throw new ApiError(0, `${path} returned a web page instead of API data.`, 'NOT_JSON')
   }
   return (await response.json()) as T
 }
@@ -132,10 +144,17 @@ export async function withFallbackAsync<T>(
 
 function fallbackNote(error: unknown): string {
   if (error instanceof ApiError) {
+    if (error.code === 'TIMEOUT') {
+      return 'The live API is waking up or slow: showing demo data. Refresh in a minute.'
+    }
+    if (error.code === 'NOT_JSON') return 'No API behind this address: showing demo data.'
     if (error.status === 0) return 'API offline: showing demo data.'
     if (error.status === 401) return 'Not signed in to the API: showing demo data.'
     if (error.status === 403) return 'Outside your access scope: showing demo data.'
-    if (error.status === 404) return 'No analytics results in the API yet: showing demo data.'
+    if (error.status === 404 && error.code === 'NO_RESULTS') {
+      return 'No analytics results in the API yet: showing demo data.'
+    }
+    if (error.status === 404) return 'API offline: showing demo data.'
   }
   return 'The API request failed: showing demo data.'
 }

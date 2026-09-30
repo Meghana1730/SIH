@@ -72,7 +72,7 @@ export default function LoginPage() {
     setPending('demo')
     try {
       const mode = await session.enterDemo()
-      if (mode === 'api') toast.success('Signed in to the local API as demo admin')
+      if (mode === 'api') toast.success('Signed in to the live API with the demo account')
       else toast.info('Offline demo mode: showing built-in demo data')
     } catch (e) {
       setError(errorMessage(e))
@@ -200,7 +200,7 @@ export default function LoginPage() {
                 {pending === 'demo' ? 'Entering demo...' : t('login.enterDemo')}
               </Button>
               <p className="text-xs text-muted-foreground">
-                Uses the local API when a demo account is configured; otherwise runs offline with
+                Uses the live API when a demo account is configured; otherwise runs offline with
                 built-in demo data (clearly labelled).
               </p>
             </div>
@@ -272,53 +272,58 @@ export default function LoginPage() {
             </form>
           </section>
 
-          <section
-            aria-labelledby="demo-accounts-heading"
-            className="space-y-3 rounded-xl border bg-card p-5 shadow-xs"
-          >
-            <div>
-              <h2 id="demo-accounts-heading" className="text-sm font-semibold">
-                {t('login.demoAccounts')}
-              </h2>
-              <p className="text-xs text-muted-foreground">
-                {DEMO_LOGIN.password
-                  ? 'Click an account to sign in with the local demo password.'
-                  : 'Click an account to fill in its email address.'}
-              </p>
-            </div>
-            <ul className="divide-y rounded-lg border">
-              {DEMO_ACCOUNTS.map((account) => (
-                <li key={account.email}>
-                  <button
-                    type="button"
-                    disabled={busy}
-                    onClick={() => pickAccount(account.email)}
-                    className="flex w-full items-center gap-3 px-3 py-2.5 text-left transition-colors hover:bg-muted focus-visible:outline-2 disabled:opacity-60"
-                  >
-                    <span className="grid size-8 shrink-0 place-items-center rounded-full bg-accent text-primary">
-                      <UserRound className="size-4" aria-hidden />
-                    </span>
-                    <span className="min-w-0 flex-1">
-                      <span className="block truncate text-sm font-medium">{account.label}</span>
-                      <span className="block truncate font-mono text-xs text-muted-foreground">
-                        {account.email}
+          {/* Local development only: all local demo accounts share one password. A deployed
+              site has one public read-only demo account (used by "Enter demo"); clicking the
+              others with its password would only lock them out. */}
+          {import.meta.env.DEV && (
+            <section
+              aria-labelledby="demo-accounts-heading"
+              className="space-y-3 rounded-xl border bg-card p-5 shadow-xs"
+            >
+              <div>
+                <h2 id="demo-accounts-heading" className="text-sm font-semibold">
+                  {t('login.demoAccounts')}
+                </h2>
+                <p className="text-xs text-muted-foreground">
+                  {DEMO_LOGIN.password
+                    ? 'Click an account to sign in with the local demo password.'
+                    : 'Click an account to fill in its email address.'}
+                </p>
+              </div>
+              <ul className="divide-y rounded-lg border">
+                {DEMO_ACCOUNTS.map((account) => (
+                  <li key={account.email}>
+                    <button
+                      type="button"
+                      disabled={busy}
+                      onClick={() => pickAccount(account.email)}
+                      className="flex w-full items-center gap-3 px-3 py-2.5 text-left transition-colors hover:bg-muted focus-visible:outline-2 disabled:opacity-60"
+                    >
+                      <span className="grid size-8 shrink-0 place-items-center rounded-full bg-accent text-primary">
+                        <UserRound className="size-4" aria-hidden />
                       </span>
-                    </span>
-                    <Pill tone={account.role === 'admin' ? 'primary' : 'neutral'}>
-                      {ROLE_LABELS[account.role]}
-                    </Pill>
-                  </button>
-                </li>
-              ))}
-            </ul>
-            <p className="text-xs text-muted-foreground">
-              Passwords are set locally with{' '}
-              <code className="rounded bg-muted px-1 py-0.5 font-mono text-[11px] text-foreground">
-                python -m app.cli.demo_users
-              </code>
-              ; they are never stored in the code.
-            </p>
-          </section>
+                      <span className="min-w-0 flex-1">
+                        <span className="block truncate text-sm font-medium">{account.label}</span>
+                        <span className="block truncate font-mono text-xs text-muted-foreground">
+                          {account.email}
+                        </span>
+                      </span>
+                      <Pill tone={account.role === 'admin' ? 'primary' : 'neutral'}>
+                        {ROLE_LABELS[account.role]}
+                      </Pill>
+                    </button>
+                  </li>
+                ))}
+              </ul>
+              <p className="text-xs text-muted-foreground">
+                Passwords are set locally with{' '}
+                <code className="rounded bg-muted px-1 py-0.5 font-mono text-[11px] text-foreground">
+                  python -m app.cli.demo_users
+                </code>
+                ; they are never stored in the code.
+              </p>
+            </section>
+          )}
 
           <div className="flex flex-wrap items-center justify-between gap-2 text-xs text-muted-foreground">
             <Link

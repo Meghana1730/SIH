@@ -40,12 +40,19 @@ async function runChecks(signal: AbortSignal): Promise<Checks> {
             `${api.value.service} v${api.value.version} (${api.value.env}) · ` +
             `scoring config ${api.value.scoring_config_version}`,
         }
-      : { kind: 'error', detail: 'Backend not reachable. Is uvicorn running on port 8000?' }
+      : {
+          kind: 'error',
+          detail:
+            'Backend not reachable (locally: is uvicorn running on port 8000? Online: a free server may be waking up; try again in a minute).',
+        }
 
   if (db.status === 'rejected') {
     return {
       api: apiState,
-      database: { kind: 'error', detail: 'Database not reachable. Is the db container running?' },
+      database: {
+        kind: 'error',
+        detail: 'Database not reachable (locally: is the db container running?).',
+      },
       pgvector: { kind: 'error', detail: 'Unknown (database not reachable)' },
     }
   }
@@ -100,7 +107,7 @@ export default function SystemStatusPage() {
       <header className="space-y-1">
         <h1 className="text-3xl font-semibold tracking-tight">KaushalSetu</h1>
         <p className="text-muted-foreground">
-          Labour-market intelligence and curriculum alignment · development build
+          Labour-market intelligence and curriculum alignment · prototype on synthetic demo data
         </p>
       </header>
 
@@ -108,8 +115,7 @@ export default function SystemStatusPage() {
         <CardHeader>
           <CardTitle>System status</CardTitle>
           <CardDescription>
-            Checks that the frontend, backend API and database are connected. Product features are
-            not built yet.
+            Checks that the frontend, backend API and database are connected.
           </CardDescription>
         </CardHeader>
         <CardContent>

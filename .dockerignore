@@ -1,0 +1,18 @@
+# Keep the backend image small and free of secrets (build context = repository root).
+.git
+.env
+.env.*
+!.env.example
+**/__pycache__
+**/*.pyc
+backend/.venv
+backend/.pytest_cache
+backend/.ruff_cache
+backend/*.egg-info
+frontend
+models
+data/raw
+docs
+scripts
+*.md
+!backend/README.md
