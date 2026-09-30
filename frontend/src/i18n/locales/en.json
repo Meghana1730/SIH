@@ -1,6 +1,6 @@
 {
   "app": {
-    "name": "KaushalSetu",
+    "name": "InnovProcure",
     "tagline": "Skill intelligence for Maharashtra",
     "state": "Maharashtra"
   },
@@ -81,7 +81,7 @@
   },
   "login": {
     "title": "Match training to the jobs employers need",
-    "subtitle": "KaushalSetu reads job postings, employer surveys and training data to show where Maharashtra's Electrical, EV and Solar PV skills are short, and what institutes should change.",
+    "subtitle": "InnovProcure reads job postings, employer surveys and training data to show where Maharashtra's Electrical, EV and Solar PV skills are short, and what institutes should change.",
     "enterDemo": "Enter demo",
     "signIn": "Sign in",
     "email": "Email",

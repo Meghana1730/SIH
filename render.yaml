@@ -15,6 +15,9 @@ services:
     envVars:
       - key: APP_ENV
         value: production
+      # Name shown in /health, on the System status page and in the API docs.
+      - key: APP_NAME
+        value: InnovProcure API
       # Neon DIRECT connection string (in Neon's Connect dialog turn OFF "Connection pooling":
       # the host must NOT contain -pooler), changed to the SQLAlchemy form, e.g.
       # postgresql+psycopg://neondb_owner:PASSWORD@ep-xxxx.ap-southeast-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require

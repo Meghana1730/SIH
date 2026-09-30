@@ -4,7 +4,7 @@ const BACKEND_HEALTH_URL = 'http://127.0.0.1:8000/health'
 
 test('the system status page loads', async ({ page }) => {
   await page.goto('/status')
-  await expect(page.getByRole('heading', { level: 1, name: 'KaushalSetu' })).toBeVisible()
+  await expect(page.getByRole('heading', { level: 1, name: 'InnovProcure' })).toBeVisible()
   await expect(page.getByText('System status')).toBeVisible()
   await expect(page.getByRole('button', { name: 'Check again' })).toBeVisible()
 })

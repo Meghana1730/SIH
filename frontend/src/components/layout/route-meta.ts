@@ -30,6 +30,6 @@ export function useRouteMeta(): { titleKey: string | undefined; crumbs: Crumb[] 
 /** Sets the browser tab title. */
 export function useDocumentTitle(title: string | undefined) {
   useEffect(() => {
-    document.title = title ? `${title} · KaushalSetu` : 'KaushalSetu'
+    document.title = title ? `${title} · InnovProcure` : 'InnovProcure'
   }, [title])
 }

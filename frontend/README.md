@@ -1,4 +1,4 @@
-# KaushalSetu frontend
+# InnovProcure frontend
 
 React 19 + TypeScript + Vite + Tailwind CSS v4 + shadcn/ui, TanStack Query, react-router,
 Recharts and react-i18next (English / हिन्दी / मराठी).

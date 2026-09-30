@@ -151,7 +151,7 @@ export function SyntheticBadge({ className }: { className?: string }) {
 
 /**
  * Where a section's data came from.
- * live: the KaushalSetu API (whose data is itself the synthetic demo world, so "synthetic" too)
+ * live: the InnovProcure API (whose data is itself the synthetic demo world, so "synthetic" too)
  * demo: the frontend's deterministic demo fallback
  */
 export function DataSourceBadge({
@@ -191,7 +191,7 @@ export function DataSourceBadge({
         </span>
       </TooltipTrigger>
       <TooltipContent className="max-w-xs">
-        From the KaushalSetu API.{' '}
+        From the InnovProcure API.{' '}
         {synthetic
           ? 'The database holds the synthetic demo world, so these are not real or official statistics.'
           : ''}

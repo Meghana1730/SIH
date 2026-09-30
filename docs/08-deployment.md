@@ -13,6 +13,10 @@ same as on your laptop: never present it as real or official statistics.
 Files used: [`render.yaml`](../render.yaml) (Render blueprint), [`backend/Dockerfile`](../backend/Dockerfile),
 [`.dockerignore`](../.dockerignore), [`frontend/vercel.json`](../frontend/vercel.json).
 
+**Current state:** the website is deployed **frontend-only** on Vercel: every screen works on the
+built-in demo data (badged **Demo data**) and the System status page says **Not connected**.
+Steps 1-3 below add the live database and API; step 4 connects the website to them.
+
 **Before you start**
 - Finish the local setup first ([README](../README.md) sections 2 and 3): you need the backend venv
   on your laptop to fill the online database.
@@ -92,8 +96,23 @@ demo data is ever changed or damaged before judging, you can restore from it.
 
 ## Step 4. Frontend: Vercel
 
-1. If your Render address is not `https://innovprocure-api.onrender.com`, replace it in
-   [`frontend/vercel.json`](../frontend/vercel.json) (3 places), commit and push.
+1. Connect the website to the backend: replace [`frontend/vercel.json`](../frontend/vercel.json)
+   with the version below (use your exact Render address from step 3), commit and push. Until
+   then the site runs frontend-only on its built-in demo data (that is how it is deployed now).
+   ```json
+   {
+     "$schema": "https://openapi.vercel.sh/vercel.json",
+     "framework": "vite",
+     "buildCommand": "npm run build",
+     "outputDirectory": "dist",
+     "rewrites": [
+       { "source": "/api/:path*", "destination": "https://innovprocure-api.onrender.com/api/:path*" },
+       { "source": "/health", "destination": "https://innovprocure-api.onrender.com/health" },
+       { "source": "/health/:path*", "destination": "https://innovprocure-api.onrender.com/health/:path*" },
+       { "source": "/(.*)", "destination": "/index.html" }
+     ]
+   }
+   ```
 2. Sign up at https://vercel.com with GitHub. **Add New > Project**, import the `SIH` repository.
 3. **Root Directory: `frontend`**. The framework preset is detected as **Vite** (build
    `npm run build`, output `dist`).

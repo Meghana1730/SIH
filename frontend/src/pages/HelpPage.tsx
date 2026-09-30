@@ -199,7 +199,7 @@ export default function HelpPage() {
     <div className="space-y-6">
       <PageHeader
         eyebrow={t('pages.help')}
-        title="How KaushalSetu works"
+        title="How InnovProcure works"
         description="Where the numbers come from, how they are combined, and how to walk through the demo. Every figure in this prototype is computed from a synthetic demo world."
         badges={<SyntheticBadge />}
       />

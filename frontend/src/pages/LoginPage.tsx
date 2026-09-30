@@ -85,7 +85,7 @@ export default function LoginPage() {
     setPending('login')
     try {
       await session.login(address, secret)
-      toast.success('Signed in to the KaushalSetu API')
+      toast.success('Signed in to the InnovProcure API')
     } catch (e) {
       setError(errorMessage(e))
       setPending(null)
@@ -179,7 +179,7 @@ export default function LoginPage() {
                 {t('pages.login')}
               </h2>
               <p className="text-sm text-muted-foreground">
-                Explore the prototype straight away, or sign in to the local KaushalSetu API with an
+                Explore the prototype straight away, or sign in to the InnovProcure API with an
                 account.
               </p>
             </div>

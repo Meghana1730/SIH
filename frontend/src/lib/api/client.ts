@@ -70,7 +70,7 @@ export async function apiFetch<T>(path: string, options: FetchOptions = {}): Pro
       throw new ApiError(0, 'The API did not answer in time (it may be waking up).', 'TIMEOUT')
     }
     if (error instanceof DOMException && error.name === 'AbortError') throw error
-    throw new ApiError(0, 'The KaushalSetu API is not reachable.', 'NETWORK')
+    throw new ApiError(0, 'The InnovProcure API is not reachable.', 'NETWORK')
   }
   if (!response.ok) {
     let message = `${path} returned HTTP ${response.status}`

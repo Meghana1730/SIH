@@ -30,7 +30,7 @@ export default function NotFoundPage() {
               </Link>
             </Button>
             <Button variant="outline" asChild>
-              <Link to="/help">How KaushalSetu works</Link>
+              <Link to="/help">How InnovProcure works</Link>
             </Button>
           </div>
         }

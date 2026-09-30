@@ -618,7 +618,7 @@ export default function AdminPage() {
               label="Session"
               hint={
                 isApi
-                  ? 'Pages read the KaushalSetu API. Its database holds the synthetic demo world.'
+                  ? 'Pages read the InnovProcure API. Its database holds the synthetic demo world.'
                   : 'No API session: every page shows the built-in demo data.'
               }
             >

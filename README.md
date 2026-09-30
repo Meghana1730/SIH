@@ -367,7 +367,7 @@ The website runs for Rs 0 on three free services:
 
 | Part | Service | Config in this repository |
 |---|---|---|
-| Frontend (the website) | **Vercel** | [`frontend/vercel.json`](frontend/vercel.json): forwards `/api` to the backend, serves deep links |
+| Frontend (the website) | **Vercel** | [`frontend/vercel.json`](frontend/vercel.json): serves deep links; forwarding `/api` to the backend is added when the backend is live (guide step 4) |
 | Backend API | **Render** (free Docker web service) | [`render.yaml`](render.yaml), [`backend/Dockerfile`](backend/Dockerfile) |
 | Database (PostgreSQL + pgvector) | **Neon** (free plan) | filled from your laptop with the setup commands |
 

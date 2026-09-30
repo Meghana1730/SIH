@@ -57,7 +57,7 @@ function DemoStrip() {
         All figures come from a synthetic demo world, not real or official statistics.
       </span>
       <span className="ml-auto font-medium">
-        {mode === 'api' ? 'Connected to the KaushalSetu API' : 'Offline demo mode (no API)'}
+        {mode === 'api' ? 'Connected to the InnovProcure API' : 'Offline demo mode (no API)'}
         {demo.evExpansionSimulated ? ' · Nashik EV expansion simulated' : ''}
       </span>
     </div>

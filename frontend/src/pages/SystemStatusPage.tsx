@@ -10,13 +10,16 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card'
-import { apiFetch } from '@/lib/api/client'
+import { ApiError, apiFetch } from '@/lib/api/client'
 import type { ApiHealth, DbHealth } from '@/lib/api/types'
 
 // Each check is either still running, passed, or failed. The text is always shown,
 // so the status never depends on colour alone.
 type CheckState =
-  { kind: 'checking' } | { kind: 'ok'; detail: string } | { kind: 'error'; detail: string }
+  | { kind: 'checking' }
+  | { kind: 'ok'; detail: string }
+  | { kind: 'error'; detail: string }
+  | { kind: 'absent'; detail: string }
 
 type Checks = { api: CheckState; database: CheckState; pgvector: CheckState }
 
@@ -31,6 +34,19 @@ async function runChecks(signal: AbortSignal): Promise<Checks> {
     apiFetch<ApiHealth>('/health', { signal, auth: false }),
     apiFetch<DbHealth>('/health/db', { signal, auth: false }),
   ])
+
+  // A frontend-only deployment (static host, no backend) answers /health with the web page.
+  if (
+    api.status === 'rejected' &&
+    api.reason instanceof ApiError &&
+    api.reason.code === 'NOT_JSON'
+  ) {
+    const absent: CheckState = {
+      kind: 'absent',
+      detail: 'No backend is connected to this website: it runs on built-in demo data.',
+    }
+    return { api: absent, database: absent, pgvector: absent }
+  }
 
   const apiState: CheckState =
     api.status === 'fulfilled'
@@ -79,6 +95,7 @@ function StatusRow({ label, state, testId }: { label: string; state: CheckState;
       {state.kind === 'checking' && <Badge variant="outline">Checking…</Badge>}
       {state.kind === 'ok' && <Badge>OK</Badge>}
       {state.kind === 'error' && <Badge variant="destructive">Problem</Badge>}
+      {state.kind === 'absent' && <Badge variant="outline">Not connected</Badge>}
     </li>
   )
 }
@@ -105,7 +122,7 @@ export default function SystemStatusPage() {
   return (
     <main className="mx-auto flex min-h-screen max-w-2xl flex-col gap-6 px-4 py-10">
       <header className="space-y-1">
-        <h1 className="text-3xl font-semibold tracking-tight">KaushalSetu</h1>
+        <h1 className="text-3xl font-semibold tracking-tight">InnovProcure</h1>
         <p className="text-muted-foreground">
           Labour-market intelligence and curriculum alignment · prototype on synthetic demo data
         </p>
